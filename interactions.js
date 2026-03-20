@@ -95,7 +95,27 @@ document.addEventListener('DOMContentLoaded', () => {
     revealEls.forEach((el) => el.classList.add('is-visible'));
   }
 
+  const navToggle = document.getElementById('navToggle');
+  const navLinksWrap = document.getElementById('navLinks');
+  if (navToggle && navLinksWrap) {
+    navToggle.addEventListener('click', () => {
+      const isOpen = navLinksWrap.classList.toggle('is-open');
+      navToggle.setAttribute('aria-expanded', String(isOpen));
+      navToggle.textContent = isOpen ? 'Đóng' : 'Menu';
+    });
+  }
+
   const navLinks = document.querySelectorAll('.nav-links a[href^="#"]');
+  navLinks.forEach(link => link.addEventListener('click', () => {
+    if (navLinksWrap && navLinksWrap.classList.contains('is-open')) {
+      navLinksWrap.classList.remove('is-open');
+      if (navToggle) {
+        navToggle.setAttribute('aria-expanded', 'false');
+        navToggle.textContent = 'Menu';
+      }
+    }
+  }));
+
   const sections = Array.from(navLinks)
     .map(link => document.querySelector(link.getAttribute('href')))
     .filter(Boolean);

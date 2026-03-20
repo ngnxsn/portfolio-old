@@ -493,7 +493,38 @@ h1 span {
   }
   .hero-stats { grid-template-columns: 1fr; }
   .site-nav-wrap { top: 8px; }
-  .nav { flex-direction: column; align-items: flex-start; }
+  .nav {
+    position: relative;
+    flex-direction: row;
+    align-items: center;
+  }
+  .nav-toggle {
+    display: inline-flex;
+    margin-left: auto;
+  }
+  .nav-links {
+    display: none;
+    position: absolute;
+    top: calc(100% + 10px);
+    left: 0;
+    right: 0;
+    padding: 14px;
+    border-radius: 20px;
+    background: linear-gradient(180deg, rgba(16,22,34,.96), rgba(9,12,17,.96));
+    border: 1px solid rgba(255,255,255,.08);
+    box-shadow: 0 20px 50px rgba(0,0,0,.28);
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .nav-links.is-open {
+    display: grid;
+  }
+  .nav-links a {
+    width: 100%;
+    padding: 12px 10px;
+    text-align: left;
+    background: rgba(255,255,255,.03);
+  }
   .section-head.with-scroll-tip { text-align: center; }
 }
 @media (max-width: 640px) {
