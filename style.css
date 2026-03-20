@@ -616,3 +616,98 @@ h1 span {
     transform: translateY(-7px) rotate(-45deg);
   }
 }
+/* ===== Force fix nav toggle desktop/mobile ===== */
+
+@media (min-width: 769px) {
+  #navToggle {
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+    width: 0 !important;
+    height: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: 0 !important;
+    overflow: hidden !important;
+  }
+
+  #navLinks {
+    display: flex !important;
+    align-items: center !important;
+  }
+}
+
+#navToggle::before,
+#navToggle::after,
+#navToggle span::before,
+#navToggle span::after {
+  content: none !important;
+}
+
+@media (max-width: 768px) {
+  #navToggle {
+    display: inline-flex !important;
+    position: relative !important;
+    width: 46px !important;
+    height: 46px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    border-radius: 14px !important;
+    background: rgba(255, 255, 255, 0.04) !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex-direction: column !important;
+    gap: 5px !important;
+    cursor: pointer !important;
+    flex-shrink: 0 !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+    overflow: visible !important;
+  }
+
+  #navToggle span {
+    display: block !important;
+    width: 18px !important;
+    height: 2px !important;
+    border-radius: 999px !important;
+    background: #fff !important;
+  }
+
+  #navLinks {
+    display: none !important;
+  }
+
+  #navLinks.is-open {
+    display: flex !important;
+    position: absolute !important;
+    top: calc(100% + 12px) !important;
+    left: 0 !important;
+    right: 0 !important;
+    margin-left: 0 !important;
+    padding: 14px !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 10px !important;
+    border-radius: 20px !important;
+    background: rgba(10, 14, 24, 0.96) !important;
+    backdrop-filter: blur(18px) !important;
+    -webkit-backdrop-filter: blur(18px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.28) !important;
+    z-index: 1000 !important;
+  }
+
+  #navLinks a {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-height: 46px !important;
+    padding: 10px 14px !important;
+    text-align: center !important;
+    border-radius: 14px !important;
+    background: rgba(255, 255, 255, 0.03) !important;
+  }
+}
