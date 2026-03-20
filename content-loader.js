@@ -266,5 +266,7 @@
     if (phoneText && data.phone) phoneText.textContent = data.phone;
     setText('addressText', data.address);
     document.body.classList.remove('is-loading');
+    document.documentElement.classList.remove('boot-loading');
+    document.body.style.visibility = 'visible';
   });
 })();
