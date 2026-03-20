@@ -503,6 +503,10 @@ h1 span {
   .nav-toggle {
     display: inline-flex;
     margin-left: auto;
+    min-width: 44px;
+    min-height: 44px;
+    font-size: 22px;
+    line-height: 1;
   }
   .nav-links {
     display: none;
@@ -667,3 +671,20 @@ rt; }
 
 
 
+
+@media (max-width: 640px) {
+  .education-scroll {
+    display: grid !important;
+    grid-auto-flow: row !important;
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+    overflow-x: visible !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+  .education-scroll .edu-card {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+  }
+}
