@@ -4,7 +4,7 @@ window.PORTFOLIO_DEFAULTS = {
   headline: 'INFORMATION',
   headlineHighlight: '',
   lead: 'Xin chào các nhà tuyển dụng! Mình là Nguyễn Xuân Sơn. Mình xuất phát từ nền tảng Thiết Kế Đồ Họa, sau đó mở rộng sang quay dựng video, chụp ảnh, landing page và ứng dụng AI để phục vụ tốt hơn cho nhu cầu marketing thực tế.',
-  heroPrimaryCtaText: 'Liên hệ công việc',
+  heroPrimaryCtaText: 'Liên hệ',
   heroSecondaryCtaText: 'Xem Behance',
   heroSecondaryCtaLink: 'https://behance.net/ngnxsn',
   heroVideoCtaText: 'Xem video sản phẩm',
