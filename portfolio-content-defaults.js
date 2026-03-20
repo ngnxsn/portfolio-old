@@ -46,7 +46,7 @@ window.PORTFOLIO_DEFAULTS = {
   experienceCards: '2/2022 - 4/2023 | Design / Video | Hưng Thịnh | Thiết kế & quay dựng, sau đó lên Trưởng nhóm Media | Triển khai bộ nhận diện, bao bì, hình ảnh sản phẩm, video quảng cáo, banner website và nội dung sàn thương mại điện tử.\n1/2023 - 4/2023 | Co-founder | Hadar Studios | Đồng sáng lập dự án cá nhân | Phát triển dịch vụ thiết kế, chụp ảnh, quay dựng video và landing page cho cá nhân, thương hiệu và mô hình kinh doanh online.\n5/2023 - 6/2024 | Media Lead | Hoàng Kim Cosmetic / Deva Cell | Trưởng nhóm Media | Quản lý và sản xuất nội dung thiết kế, ảnh chụp, video sản phẩm, video quảng cáo và short-form content cho TikTok / Facebook.\n7/2024 - 3/2026 | Ads Video | JIMIN | Nhân viên quay - dựng | Phụ trách video ads cho các ngành như phong thủy, thẩm mỹ không xâm lấn, giảm béo và detox cơ thể.\n2026 - hiện tại | Giảng dạy | ITPLUS | Giảng dạy online các khóa học về thiết kế, quay dựng, AI for marketing.',
   educationEyebrow: 'EDUCATION',
   educationTitle: 'Nền tảng chuyên môn',
-  educationCards: 'Đại học Công Nghiệp Việt - Hung | Tốt nghiệp kỹ sư Công Nghệ Thông Tin • 2018 - 2022\nVisual Thinking | Nền tảng thực chiến tiếp tục được bồi qua công việc thật, môi trường ads, social content, quay dựng và sản xuất cho marketing.',
+  educationCards: 'Đại học Công Nghiệp Việt - Hung | Tốt nghiệp chuyên ngành Thiết Kế Đồ Họa • 2018 - 2022\nVisual Thinking | Nền tảng thực chiến tiếp tục được bồi qua công việc thật, môi trường ads, social content, quay dựng và sản xuất cho marketing.',
   contactEyebrow: 'CONTACT',
   contactTitle: 'Liên hệ nếu thấy CV của mình phù hợp nhé!',
   contactDesc: 'Cảm ơn bạn đã xem hết CV của mình.',
