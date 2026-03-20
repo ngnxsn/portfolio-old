@@ -111,7 +111,7 @@ document.addEventListener('DOMContentLoaded', () => {
       navLinksWrap.classList.remove('is-open');
       if (navToggle) {
         navToggle.setAttribute('aria-expanded', 'false');
-        navToggle.textContent = 'Menu';
+        navToggle.setAttribute('aria-label', 'Mở menu');
       }
     }
   }));
