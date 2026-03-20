@@ -370,8 +370,10 @@ h1 span {
 .education-scroll {
   grid-auto-columns: minmax(320px, 520px);
   justify-content: center;
-  overflow-x: visible;
+  overflow-x: auto;
+  max-width: 100%;
   scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 .education-scroll::-webkit-scrollbar { display: none; }
 .edu-placeholder { opacity: .92; }
