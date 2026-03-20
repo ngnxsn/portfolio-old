@@ -21,6 +21,16 @@ body {
   background: linear-gradient(180deg, #05070b 0%, #0d121a 100%);
   overflow-x: hidden;
 }
+body.is-loading main,
+body.is-loading .hero,
+body.is-loading .site-nav-wrap {
+  opacity: 0;
+}
+body main,
+body .hero,
+body .site-nav-wrap {
+  transition: opacity .18s ease;
+}
 a { color: inherit; text-decoration: none; }
 .container { width: min(1200px, calc(100% - 32px)); margin: 0 auto; }
 .ambient {

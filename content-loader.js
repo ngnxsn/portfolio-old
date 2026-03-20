@@ -265,5 +265,6 @@
     const phoneText = document.querySelector('#phoneBtn .contact-text');
     if (phoneText && data.phone) phoneText.textContent = data.phone;
     setText('addressText', data.address);
+    document.body.classList.remove('is-loading');
   });
 })();
