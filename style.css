@@ -500,7 +500,6 @@ h1 span {
     flex-direction: row;
     align-items: center;
   }
-  .nav-toggle {`r`n  display: none;`r`n  position: relative;`r`n  align-items: center;`r`n  justify-content: center;`r`n  width: 44px;`r`n  height: 44px;`r`n  margin-left: auto;`r`n  padding: 0;`r`n  border-radius: 14px;`r`n  border: 1px solid rgba(255,255,255,.10);`r`n  background: rgba(255,255,255,.06);`r`n}`r`n.nav-toggle::before {`r`n  content: "";`r`n  width: 18px;`r`n  height: 12px;`r`n  display: block;`r`n  background:`r`n    linear-gradient(#eef4ff,#eef4ff) 0 0 / 18px 2px no-repeat,`r`n    linear-gradient(#eef4ff,#eef4ff) 0 5px / 18px 2px no-repeat,`r`n    linear-gradient(#eef4ff,#eef4ff) 0 10px / 18px 2px no-repeat;`r`n}`r`n.nav-toggle[aria-expanded="true"]::before {`r`n  background:`r`n    linear-gradient(45deg, transparent 44%, #eef4ff 44%, #eef4ff 56%, transparent 56%) center / 18px 18px no-repeat,`r`n    linear-gradient(-45deg, transparent 44%, #eef4ff 44%, #eef4ff 56%, transparent 56%) center / 18px 18px no-repeat;`r`n  height: 18px;`r`n}
   /* ===== Mobile nav toggle ===== */
 
 .nav {
@@ -523,7 +522,8 @@ h1 span {
 }
 
 .nav-toggle {
-  display: none;
+  display: none !important;
+  position: relative;
   width: 46px;
   height: 46px;
   padding: 0;
@@ -547,7 +547,10 @@ h1 span {
   background: #ffffff;
   transition: 0.25s ease;
 }
-
+.nav-toggle::before,
+.nav-toggle::after {
+  content: none !important;
+}
 .nav-toggle:hover {
   background: rgba(255, 255, 255, 0.08);
 }
@@ -563,8 +566,8 @@ h1 span {
   }
 
   .nav-toggle {
-    display: inline-flex;
-  }
+  display: inline-flex !important;
+}
 
   .nav-links {
     display: none;
