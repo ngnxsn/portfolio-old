@@ -96,25 +96,55 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   const navToggle = document.getElementById('navToggle');
-  const navLinksWrap = document.getElementById('navLinks');
-  if (navToggle && navLinksWrap) {
-    navToggle.addEventListener('click', () => {
-      const isOpen = navLinksWrap.classList.toggle('is-open');
-      navToggle.setAttribute('aria-expanded', String(isOpen));
-      navToggle.setAttribute('aria-label', isOpen ? '��ng menu' : 'M? menu');
-    });
-  }
+const navLinksWrap = document.getElementById('navLinks');
+const navLinks = document.querySelectorAll('.nav-links a[href^="#"]');
 
-  const navLinks = document.querySelectorAll('.nav-links a[href^="#"]');
-  navLinks.forEach(link => link.addEventListener('click', () => {
-    if (navLinksWrap && navLinksWrap.classList.contains('is-open')) {
+function syncNavByScreen() {
+  if (!navToggle || !navLinksWrap) return;
+
+  if (window.innerWidth > 768) {
+    navToggle.style.display = 'none';
+    navLinksWrap.classList.remove('is-open');
+    navToggle.setAttribute('aria-expanded', 'false');
+    navToggle.setAttribute('aria-label', 'Mở menu');
+  } else {
+    navToggle.style.display = 'inline-flex';
+  }
+}
+
+if (navToggle && navLinksWrap) {
+  syncNavByScreen();
+
+  navToggle.addEventListener('click', (e) => {
+    if (window.innerWidth > 768) return;
+    e.stopPropagation();
+
+    const isOpen = navLinksWrap.classList.toggle('is-open');
+    navToggle.setAttribute('aria-expanded', String(isOpen));
+    navToggle.setAttribute('aria-label', isOpen ? 'Đóng menu' : 'Mở menu');
+    navToggle.classList.toggle('is-open', isOpen);
+  });
+
+  navLinks.forEach((link) => {
+    link.addEventListener('click', () => {
       navLinksWrap.classList.remove('is-open');
-      if (navToggle) {
-        navToggle.setAttribute('aria-expanded', 'false');
-        navToggle.setAttribute('aria-label', 'Mở menu');
-      }
+      navToggle.setAttribute('aria-expanded', 'false');
+      navToggle.setAttribute('aria-label', 'Mở menu');
+      navToggle.classList.remove('is-open');
+    });
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!navToggle.contains(e.target) && !navLinksWrap.contains(e.target)) {
+      navLinksWrap.classList.remove('is-open');
+      navToggle.setAttribute('aria-expanded', 'false');
+      navToggle.setAttribute('aria-label', 'Mở menu');
+      navToggle.classList.remove('is-open');
     }
-  }));
+  });
+
+  window.addEventListener('resize', syncNavByScreen);
+}
 
   const sections = Array.from(navLinks)
     .map(link => document.querySelector(link.getAttribute('href')))
