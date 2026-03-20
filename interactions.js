@@ -101,7 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
     navToggle.addEventListener('click', () => {
       const isOpen = navLinksWrap.classList.toggle('is-open');
       navToggle.setAttribute('aria-expanded', String(isOpen));
-      navToggle.textContent = isOpen ? 'ƒê√≥ng' : 'Menu';
+      navToggle.setAttribute('aria-label', isOpen ? '–Ûng menu' : 'M? menu');
     });
   }
 
