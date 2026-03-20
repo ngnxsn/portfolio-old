@@ -1,20 +1,19 @@
 <!doctype html>
 <html lang="vi">
-<head>
+<head>`r`n  <style>html:not(.admin-ok) body{display:none !important;} html,body{background:#0b0f14;}</style>
   <script>
-  document.documentElement.style.display = 'none';
   (function () {
     const host = window.location.hostname;
     const isLocal = host === '127.0.0.1' || host === 'localhost';
     const key = new URLSearchParams(window.location.search).get('k');
     const validKey = '0312';
-    if (!isLocal && key !== validKey) {
-      document.open();
-      document.write('<!doctype html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>404</title><style>html,body{margin:0;height:100%}body{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:#0b0f14;color:#eef4ff;display:grid;place-items:center} .box{padding:32px 28px;border:1px solid rgba(255,255,255,.08);border-radius:20px;background:rgba(255,255,255,.04);max-width:560px;text-align:center} h1{margin:0 0 12px;font-size:28px} p{margin:0;color:#9aa8bf;line-height:1.6}</style></head><body><div class="box"><h1>404</h1><p>Trang này không kh? d?ng công khai.</p></div></body></html>');
-      document.close();
+    if (isLocal || key === validKey) {
+      document.documentElement.classList.add('admin-ok');
       return;
     }
-    document.documentElement.style.display = '';
+    document.open();
+    document.write('<!doctype html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>404</title><style>html,body{margin:0;height:100%;background:#0b0f14}body{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:#eef4ff;display:grid;place-items:center} .box{padding:32px 28px;border:1px solid rgba(255,255,255,.08);border-radius:20px;background:rgba(255,255,255,.04);max-width:560px;text-align:center} h1{margin:0 0 12px;font-size:28px} p{margin:0;color:#9aa8bf;line-height:1.6}</style></head><body><div class="box"><h1>404</h1><p>Trang này không kh? d?ng công khai.</p></div></body></html>');
+    document.close();
   })();
 </script>
   <meta charset="UTF-8" />
