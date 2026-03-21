@@ -14,7 +14,7 @@ window.PORTFOLIO_DEFAULTS = {
   portraitPositionY: '50',
   portraitZoom: '100',
   positioning: 'Mình làm hình ảnh và video với tư duy phục vụ truyền thông, bán hàng và thương hiệu. Gọn, rõ, hiệu quả và dùng được ngay trong bối cảnh thật.',
-  heroStats: '4+ | Năm kinh nghiệm thực tiễn\nDesign + Video | Làm đồng thời visual và motion\nMarketing-first | Ưu tiên hiệu quả trước màu mè',
+  heroStats: '4+ | Năm kinh nghiệm thực tiễn\nDesign + Video | Làm đồng thời visual và motion\nAI SKILLS | Ứng dụng AI để cải thiện hiệu suất công việc',
   aboutEyebrow: 'ABOUT',
   aboutTitle: 'Chi tiết hơn về mình',
   aboutText1: 'Kỹ năng của mình bao gồm thiết kế (banner, poster, standee...), chụp ảnh (sản phẩm, sự kiện...) và quay - dựng kết hợp sử dụng AI để sản xuất các dạng video quảng cáo (sản phẩm, dịch vụ, chương trình đào tạo...), video highlight sự kiện và video ngắn trên mạng xã hội Facebook, TikTok...',
