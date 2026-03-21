@@ -1,9 +1,11 @@
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
+const { execFile } = require('child_process');
 
 const root = __dirname;
 const preferredPorts = [8933, 8934, 8940, 8950];
+const contentFile = path.join(root, 'content.json');
 
 const mimeTypes = {
   '.html': 'text/html; charset=utf-8',
@@ -19,8 +21,90 @@ const mimeTypes = {
   '.txt': 'text/plain; charset=utf-8'
 };
 
+function sendJson(res, status, data) {
+  res.writeHead(status, {
+    'Content-Type': 'application/json; charset=utf-8',
+    'Cache-Control': 'no-store, no-cache, must-revalidate, max-age=0',
+    'Pragma': 'no-cache',
+    'Expires': '0'
+  });
+  res.end(JSON.stringify(data, null, 2));
+}
+
+function runGit(args) {
+  return new Promise((resolve, reject) => {
+    execFile('git', args, { cwd: root }, (error, stdout, stderr) => {
+      const output = [stdout, stderr].filter(Boolean).join('\n').trim();
+      if (error) {
+        reject(new Error(output || error.message));
+        return;
+      }
+      resolve(output);
+    });
+  });
+}
+
+async function publishRepo() {
+  const status = await runGit(['status', '--porcelain']);
+  if (!status.trim()) {
+    return { ok: true, message: 'Không có thay đổi mới để publish.', output: '' };
+  }
+
+  await runGit(['add', 'content.json', 'content-loader.js', 'admin.html', 'server.js']);
+  const timestamp = new Date().toISOString().replace('T', ' ').replace(/:\d{2}\.\d{3}Z$/, ' UTC');
+  const commitOutput = await runGit(['commit', '-m', `Publish portfolio update ${timestamp}`]);
+  const pushOutput = await runGit(['push', 'origin', 'main']);
+  return {
+    ok: true,
+    message: 'Đã commit và push lên GitHub Pages.',
+    output: [commitOutput, pushOutput].filter(Boolean).join('\n\n')
+  };
+}
+
 function serveFile(req, res) {
   const url = new URL(req.url, 'http://localhost');
+
+  if (req.method === 'GET' && url.pathname === '/api/content') {
+    fs.readFile(contentFile, 'utf8', (err, raw) => {
+      if (err) return sendJson(res, 500, { ok: false, error: 'Cannot read content.json' });
+      try {
+        sendJson(res, 200, JSON.parse(raw));
+      } catch {
+        sendJson(res, 500, { ok: false, error: 'Invalid content.json' });
+      }
+    });
+    return;
+  }
+
+  if (req.method === 'POST' && url.pathname === '/api/content') {
+    let body = '';
+    req.on('data', chunk => {
+      body += chunk;
+      if (body.length > 10 * 1024 * 1024) {
+        req.destroy();
+      }
+    });
+    req.on('end', () => {
+      try {
+        const parsed = JSON.parse(body || '{}');
+        fs.writeFile(contentFile, JSON.stringify(parsed, null, 2) + '\n', 'utf8', (err) => {
+          if (err) return sendJson(res, 500, { ok: false, error: 'Cannot write content.json' });
+          sendJson(res, 200, { ok: true, savedTo: 'content.json' });
+        });
+      } catch {
+        sendJson(res, 400, { ok: false, error: 'Invalid JSON body' });
+      }
+    });
+    return;
+  }
+
+  if (req.method === 'POST' && url.pathname === '/api/publish') {
+    publishRepo()
+      .then(result => sendJson(res, 200, result))
+      .catch(error => sendJson(res, 500, { ok: false, error: error.message }));
+    return;
+  }
+
   let reqPath = decodeURIComponent(url.pathname.replace(/^\/+/, ''));
   if (!reqPath) reqPath = 'index.html';
   const filePath = path.join(root, reqPath);
@@ -71,6 +155,7 @@ function startServer(index = 0) {
     console.log(`Portfolio server running at http://localhost:${port}/`);
     console.log(`Index: http://localhost:${port}/index.html`);
     console.log(`Admin: http://localhost:${port}/admin.html`);
+    console.log(`API:   http://localhost:${port}/api/content`);
   });
 }
 

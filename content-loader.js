@@ -1,12 +1,6 @@
 (function () {
-  const STORAGE_KEY = 'nguyenSonPortfolioContent_v2';
+  const CONTENT_URL = 'content.json';
   const defaults = window.PORTFOLIO_DEFAULTS || {};
-  let data = { ...defaults };
-  try {
-    data = { ...defaults, ...(JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}') || {}) };
-  } catch {
-    data = { ...defaults };
-  }
 
   function setText(id, value) {
     const el = document.getElementById(id);
@@ -45,9 +39,9 @@
 
   function setListFromLines(id, value) {
     const wrap = document.getElementById(id);
-    if (!wrap || !value) return;
+    if (!wrap) return;
     wrap.innerHTML = '';
-    value.split(/\n+/).filter(Boolean).forEach(item => {
+    (value || '').split(/\n+/).filter(Boolean).forEach(item => {
       const el = document.createElement('span');
       el.textContent = item.trim();
       wrap.appendChild(el);
@@ -56,9 +50,9 @@
 
   function setSoftwareGrid(id, value) {
     const wrap = document.getElementById(id);
-    if (!wrap || !value) return;
+    if (!wrap) return;
     wrap.innerHTML = '';
-    value.split(/\n+/).filter(Boolean).forEach(item => {
+    (value || '').split(/\n+/).filter(Boolean).forEach(item => {
       const parts = item.split('|').map(s => s.trim());
       const short = parts[0] || 'Ai';
       const label = parts[1] || parts[0] || '';
@@ -72,9 +66,9 @@
 
   function setHeroStats(id, value) {
     const wrap = document.getElementById(id);
-    if (!wrap || !value) return;
+    if (!wrap) return;
     wrap.innerHTML = '';
-    value.split(/\n+/).filter(Boolean).forEach(item => {
+    (value || '').split(/\n+/).filter(Boolean).forEach(item => {
       const parts = item.split('|').map(s => s.trim());
       const title = parts[0] || '';
       const desc = parts[1] || '';
@@ -87,9 +81,9 @@
 
   function setStrengthCards(id, value) {
     const wrap = document.getElementById(id);
-    if (!wrap || !value) return;
+    if (!wrap) return;
     wrap.innerHTML = '';
-    value.split(/\n+/).filter(Boolean).forEach(item => {
+    (value || '').split(/\n+/).filter(Boolean).forEach(item => {
       const parts = item.split('|').map(s => s.trim());
       const no = parts[0] || '';
       const title = parts[1] || '';
@@ -103,9 +97,9 @@
 
   function setExperienceCards(id, value) {
     const wrap = document.getElementById(id);
-    if (!wrap || !value) return;
+    if (!wrap) return;
     wrap.innerHTML = '';
-    value.split(/\n+/).filter(Boolean).forEach(item => {
+    (value || '').split(/\n+/).filter(Boolean).forEach(item => {
       const parts = item.split('|').map(s => s.trim());
       const period = parts[0] || '';
       const tag = parts[1] || '';
@@ -121,9 +115,9 @@
 
   function setEducationCards(id, value) {
     const wrap = document.getElementById(id);
-    if (!wrap || !value) return;
+    if (!wrap) return;
     wrap.innerHTML = '';
-    value.split(/\n+/).filter(Boolean).forEach((item, idx) => {
+    (value || '').split(/\n+/).filter(Boolean).forEach((item, idx) => {
       const parts = item.split('|').map(s => s.trim());
       const title = parts[0] || '';
       const desc = parts[1] || '';
@@ -134,7 +128,7 @@
     });
   }
 
-  document.addEventListener('DOMContentLoaded', function () {
+  function applyContent(data) {
     setText('logoName', data.name);
     setText('heroEyebrow', data.eyebrow);
     setText('heroTitleMain', data.headline);
@@ -146,6 +140,7 @@
     setText('heroVideoCta', data.heroVideoCtaText);
     setHref('heroVideoCta', data.heroVideoCtaLink);
     setImg('heroPortrait', data.portraitUrl);
+    setPortraitTransform('heroPortrait', data.portraitPositionX, data.portraitPositionY, data.portraitZoom);
     setText('positioningText', data.positioning);
     setHeroStats('heroStatsList', data.heroStats);
 
@@ -198,20 +193,11 @@
       const combined = [];
       (data.behanceProjects || '').split(/\n+/).filter(Boolean).forEach(item => {
         const parts = item.split('|').map(s => s.trim());
-        combined.push({
-          type: 'image',
-          title: parts[0] || 'Project',
-          thumb: parts[1] || '',
-          link: parts[2] || '#'
-        });
+        combined.push({ type: 'image', title: parts[0] || 'Project', thumb: parts[1] || '', link: parts[2] || '#' });
       });
       (data.driveVideos || '').split(/\n+/).filter(Boolean).forEach(item => {
         const parts = item.split('|').map(s => s.trim());
-        combined.push({
-          type: 'video',
-          title: parts[0] || 'Video Preview',
-          preview: parts[1] || ''
-        });
+        combined.push({ type: 'video', title: parts[0] || 'Video Preview', preview: parts[1] || '' });
       });
 
       combined.forEach((item) => {
@@ -265,8 +251,25 @@
     const phoneText = document.querySelector('#phoneBtn .contact-text');
     if (phoneText && data.phone) phoneText.textContent = data.phone;
     setText('addressText', data.address);
+  }
+
+  async function boot() {
+    let data = { ...defaults };
+    try {
+      const res = await fetch(`${CONTENT_URL}?v=${Date.now()}`, { cache: 'no-store' });
+      if (res.ok) {
+        const fileData = await res.json();
+        data = { ...defaults, ...fileData };
+      }
+    } catch {
+      data = { ...defaults };
+    }
+
+    applyContent(data);
     document.body.classList.remove('is-loading');
     document.documentElement.classList.remove('boot-loading');
     document.body.style.visibility = 'visible';
-  });
+  }
+
+  document.addEventListener('DOMContentLoaded', boot);
 })();

@@ -12,7 +12,7 @@
       return;
     }
     document.open();
-    document.write('<!doctype html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>404</title><style>html,body{margin:0;height:100%;background:#0b0f14}body{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:#eef4ff;display:grid;place-items:center} .box{padding:32px 28px;border:1px solid rgba(255,255,255,.08);border-radius:20px;background:rgba(255,255,255,.04);max-width:560px;text-align:center} h1{margin:0 0 12px;font-size:28px} p{margin:0;color:#9aa8bf;line-height:1.6}</style></head><body><div class="box"><h1>404</h1><p>Trang n�y kh�ng kh? d?ng c�ng khai.</p></div></body></html>');
+    document.write('<!doctype html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>404</title><style>html,body{margin:0;height:100%;background:#0b0f14}body{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:#eef4ff;display:grid;place-items:center} .box{padding:32px 28px;border:1px solid rgba(255,255,255,.08);border-radius:20px;background:rgba(255,255,255,.04);max-width:560px;text-align:center} h1{margin:0 0 12px;font-size:28px} p{margin:0;color:#9aa8bf;line-height:1.6}</style></head><body><div class="box"><h1>404</h1><p>Trang n�y kh�ng kh? d?ng c�ng khai.</p></div></body></html>');
     document.close();
   })();
 </script>
@@ -52,12 +52,13 @@
     <div class="container topbar-inner">
       <div>
         <div class="brand">Landing Editor — Nguyễn Sơn Portfolio</div>
-        <div class="small">Editor local theo layout landing page. Sửa xong nhớ reload portfolio local.</div>
+        <div class="small">Editor local theo layout landing page. Lưu là ghi vào file thật content.json.</div>
       </div>
       <div class="top-actions">
         <a class="btn btn-ghost" id="openPortfolioBtn" href="index.html" target="_blank">Mở portfolio</a>
         <button class="btn btn-secondary" id="copyBtn">Copy JSON</button>
         <button class="btn btn-secondary" id="resetBtn">Khôi phục</button>
+        <button class="btn btn-secondary" id="publishBtn">Publish GitHub</button>
         <button class="btn btn-primary" id="saveBtn">Lưu nội dung</button>
       </div>
     </div>
@@ -80,7 +81,7 @@
       </div>
       <div class="glass side-card">
         <h3>Note</h3>
-        <p class="small">Lưu bằng localStorage trên localhost. Nếu vẫn không cập nhật, đóng tab cũ và mở lại từ localhost.</p>
+        <p class="small">Lưu thẳng vào file content.json trên localhost. Sửa xong thì mọi browser mở cùng local server sẽ thấy cùng một nội dung.</p>
       </div>
     </aside>
 
@@ -244,7 +245,8 @@
 
   <script src="portfolio-content-defaults.js?v=20260320p"></script>
   <script>
-    const STORAGE_KEY = 'nguyenSonPortfolioContent_v2';
+    const CONTENT_API = '/api/content';
+    const PUBLISH_API = '/api/publish';
     const defaults = window.PORTFOLIO_DEFAULTS || {
       name: 'Nguyễn Sơn',
       eyebrow: 'VISUAL DESIGNER • VIDEO MARKETER • MEDIA LEAD',
@@ -314,7 +316,16 @@
       portrait.style.transform = `scale(${zoom})`;
       portrait.style.transformOrigin = 'center center';
     }
-    const loadData = () => { try { return { ...defaults, ...(JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}) }; } catch { return { ...defaults }; } };
+    async function loadData() {
+      try {
+        const res = await fetch(`${CONTENT_API}?v=${Date.now()}`, { cache: 'no-store' });
+        if (!res.ok) throw new Error('load failed');
+        const saved = await res.json();
+        return { ...defaults, ...(saved || {}) };
+      } catch {
+        return { ...defaults };
+      }
+    }
     const fill = (data) => { ids.forEach(id => { const el = $(id); if (el) el.value = data[id] ?? ''; }); render(); };
     const read = () => { const d = {}; ids.forEach(id => { const el = $(id); d[id] = el ? el.value.trim() : (defaults[id] ?? ''); }); return d; };
     const chipText = (url, fallback) => { try { return new URL(url).host; } catch { return fallback; } };
@@ -387,11 +398,65 @@
       reader.readAsDataURL(file);
     });
     $('clearPortraitBtn').addEventListener('click', () => { if (portraitFile) portraitFile.value=''; $('portraitUrl').value=''; render(); });
-    $('saveBtn').addEventListener('click', () => { localStorage.setItem(STORAGE_KEY, JSON.stringify(read())); alert('Đã lưu nội dung portfolio.'); });
-    $('resetBtn').addEventListener('click', () => { localStorage.removeItem(STORAGE_KEY); fill(defaults); if (portraitFile) portraitFile.value=''; alert('Đã khôi phục mặc định.'); });
+    $('saveBtn').addEventListener('click', async () => {
+      const payload = read();
+      const res = await fetch(CONTENT_API, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (!res.ok) {
+        alert('Lưu thất bại. Kiểm tra local server rồi thử lại.');
+        return;
+      }
+      alert('Đã lưu vào content.json. Reload trang chính là thấy ngay.');
+    });
+    $('resetBtn').addEventListener('click', async () => {
+      fill(defaults);
+      if (portraitFile) portraitFile.value='';
+      const res = await fetch(CONTENT_API, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(defaults)
+      });
+      if (!res.ok) {
+        alert('Khôi phục giao diện xong nhưng chưa ghi được xuống file.');
+        return;
+      }
+      alert('Đã khôi phục mặc định và ghi lại content.json.');
+    });
     $('copyBtn').addEventListener('click', async () => { await navigator.clipboard.writeText(JSON.stringify(read(), null, 2)); alert('Đã copy JSON.'); });
+    $('publishBtn').addEventListener('click', async () => {
+      const saveRes = await fetch(CONTENT_API, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(read())
+      });
+      if (!saveRes.ok) {
+        alert('Lưu content.json thất bại nên chưa publish được.');
+        return;
+      }
+      const btn = $('publishBtn');
+      const oldText = btn.textContent;
+      btn.disabled = true;
+      btn.textContent = 'Đang publish...';
+      try {
+        const res = await fetch(PUBLISH_API, { method: 'POST' });
+        const result = await res.json();
+        if (!res.ok || !result.ok) {
+          alert(`Publish thất bại.\n\n${result.error || 'Không rõ lỗi'}\n\n${result.output || ''}`);
+          return;
+        }
+        alert(`Publish xong.\n\n${result.message || ''}`);
+      } catch (err) {
+        alert(`Publish lỗi: ${err.message}`);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = oldText;
+      }
+    });
 
-    fill(loadData());
+    loadData().then(fill);
   </script>
 </body>
 </html>
