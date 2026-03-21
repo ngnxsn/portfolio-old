@@ -13,6 +13,8 @@ window.PORTFOLIO_DEFAULTS = {
   portraitPositionX: '50',
   portraitPositionY: '50',
   portraitZoom: '100',
+  positioningLabel: 'Định vị',
+  positioningTitle: 'Không làm kiểu “đẹp cho vui”.',
   positioning: 'Mình làm hình ảnh và video với tư duy phục vụ truyền thông, bán hàng và thương hiệu. Gọn, rõ, hiệu quả và dùng được ngay trong bối cảnh thật.',
   heroStats: '4+ | Năm kinh nghiệm thực tiễn\nDesign + Video | Làm đồng thời visual và motion\nAI Skills | Ứng dụng AI để cải thiện hiệu suất công việc',
   aboutEyebrow: 'ABOUT',

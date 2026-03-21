@@ -141,6 +141,8 @@
     setHref('heroVideoCta', data.heroVideoCtaLink);
     setImg('heroPortrait', data.portraitUrl);
     setPortraitTransform('heroPortrait', data.portraitPositionX, data.portraitPositionY, data.portraitZoom);
+    setText('positioningLabel', data.positioningLabel);
+    setText('positioningTitle', data.positioningTitle);
     setText('positioningText', data.positioning);
     setHeroStats('heroStatsList', data.heroStats);
 
