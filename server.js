@@ -154,7 +154,7 @@ function startServer(index = 0) {
   server.listen(port, '127.0.0.1', () => {
     console.log(`Portfolio server running at http://localhost:${port}/`);
     console.log(`Index: http://localhost:${port}/index.html`);
-    console.log(`Admin: http://localhost:${port}/admin.html`);
+    console.log(`Admin: http://localhost:${port}/local-admin.html`);
     console.log(`API:   http://localhost:${port}/api/content`);
   });
 }
