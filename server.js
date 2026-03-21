@@ -50,7 +50,7 @@ async function publishRepo() {
     return { ok: true, message: 'Không có thay đổi mới để publish.', output: '' };
   }
 
-  await runGit(['add', 'content.json', 'content-loader.js', 'admin.html', 'server.js']);
+  await runGit(['add', '-A']);
   const timestamp = new Date().toISOString().replace('T', ' ').replace(/:\d{2}\.\d{3}Z$/, ' UTC');
   const commitOutput = await runGit(['commit', '-m', `Publish portfolio update ${timestamp}`]);
   const pushOutput = await runGit(['push', 'origin', 'main']);
@@ -154,7 +154,7 @@ function startServer(index = 0) {
   server.listen(port, '127.0.0.1', () => {
     console.log(`Portfolio server running at http://localhost:${port}/`);
     console.log(`Index: http://localhost:${port}/index.html`);
-    console.log(`Admin: http://localhost:${port}/local-admin.html`);
+    console.log(`Local admin: http://localhost:${port}/local-admin.html`);
     console.log(`API:   http://localhost:${port}/api/content`);
   });
 }
