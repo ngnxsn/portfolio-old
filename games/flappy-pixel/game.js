@@ -15,7 +15,27 @@ const deathLines = [
   'Pha này không phải xui, là phản xạ đang đi cà phê.',
   'Thua thêm ván nữa cũng được, miễn đừng cay với con gà.',
   'Game chưa khó lắm, chỉ là bạn đang làm nó kịch tính quá.',
-  'Thất bại là mẹ thành công, còn bạn đang gặp mẹ hơi nhiều.'
+  'Thất bại là mẹ thành công, còn bạn đang gặp mẹ hơi nhiều.',
+  'Con vịt còn né được mà bạn thì không, hơi buồn nhẹ đấy.',
+  'Bạn vừa biến một cú né đơn giản thành tiết mục cảm động.',
+  'Pha này nhìn con vịt còn tưởng bạn nhường đường cho nó.',
+  'Ống tre không chạy theo bạn đâu, chính bạn chạy vào nó đấy.',
+  'Nếu con gà biết nói chắc nó cũng xin đổi người điều khiển.',
+  'Con vịt bay ngang qua còn ngỡ bạn đang diễn xiếc miễn phí.',
+  'Bạn chơi thư giãn mà nhìn tay bấm như đang trả thù tuổi thơ.',
+  'Pha này không trách game được, game cũng đang bất ngờ.',
+  'Con vịt vừa làm cameo thôi mà bạn đã đi luôn một mạng.',
+  'Bạn né tre chưa xong mà còn muốn cãi nhau với vịt nữa à.',
+  'Gà còn chưa hoảng, người chơi đã tự làm mình hoảng trước.',
+  'Có những cú thua không đau, pha này thì hơi đau lòng đấy.',
+  'Con vịt kia chỉ bay ngang thôi, sao bạn lại xem nó như boss.',
+  'Pha này gọi là nhập vai quá sâu, thấy chướng ngại là lao vào.',
+  'Không sao, thua ván này chỉ làm con vịt tự tin hơn thôi.',
+  'Bạn vừa chứng minh tốc độ phản xạ và tốc độ tự hủy ngang nhau.',
+  'Con gà đã cố hết sức, phần còn lại là câu chuyện của bạn.',
+  'Tre không nói gì, vịt không nói gì, chỉ có kết quả nói hộ tất cả.',
+  'Bạn vừa bay theo một quỹ đạo mà vật lý cũng không muốn nhận.',
+  'Nếu đây là bài kiểm tra né vịt, thì con vịt đang chấm điểm khá gắt.'
 ];
 
 const W = canvas.width;
