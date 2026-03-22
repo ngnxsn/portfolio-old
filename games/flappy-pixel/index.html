@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Flappy Gà Pixel</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="wrap">
+    <h1>FLAPPY GÀ PIXEL</h1>
+    <div class="hud">
+      <span>Điểm: <b id="score">0</b></span>
+      <span>Level: <b id="level">1</b></span>
+      <span>Mạng: <b id="lives">1</b></span>
+      <span>Best: <b id="best">0</b></span>
+    </div>
+    <canvas id="game" width="432" height="768"></canvas>
+    <div class="help">
+      <p>Nhấn <b>SPACE</b> hoặc click để bay</p>
+      <p id="status">Nhấn để bắt đầu</p>
+      <p class="muted" id="tipline">Chúc mọi người chơi thư giãn nhé, đừng gắt quá kẻo con gà áp lực.</p>
+      <p class="credit">Created by Nguyễn Sơn</p>
+    </div>
+  </div>
+  <script src="game.js"></script>
+</body>
+</html>
