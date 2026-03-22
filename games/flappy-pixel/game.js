@@ -114,13 +114,20 @@ function addItem(){
   const topBandEnd = topBandStart + bandSize;
   const bottomBandEnd = targetPipe.top + targetPipe.gap - itemSize - 10;
   const bottomBandStart = bottomBandEnd - bandSize;
-  const useTopBand = Math.random() < 0.5;
 
-  const y = useTopBand
-    ? topBandStart + Math.random() * Math.max(4, topBandEnd - topBandStart)
-    : bottomBandStart + Math.random() * Math.max(4, bottomBandEnd - bottomBandStart);
+  const topCandidate = topBandStart + Math.random() * Math.max(4, topBandEnd - topBandStart);
+  const bottomCandidate = bottomBandStart + Math.random() * Math.max(4, bottomBandEnd - bottomBandStart);
+  const birdCurrentY = game.bird.y + game.bird.h / 2;
+  const topDistance = Math.abs(topCandidate - birdCurrentY);
+  const bottomDistance = Math.abs(bottomCandidate - birdCurrentY);
 
-  const itemOffsetX = PIPE_W + 44;
+  let y = topDistance > bottomDistance ? topCandidate : bottomCandidate;
+  const minDistanceFromBird = 85;
+  if(Math.abs(y - birdCurrentY) < minDistanceFromBird){
+    y = y < birdCurrentY ? topBandStart : bottomBandEnd;
+  }
+
+  const itemOffsetX = PIPE_W + 70;
   game.items.push({
     x: targetPipe.x + itemOffsetX,
     y,
