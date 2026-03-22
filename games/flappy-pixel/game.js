@@ -341,11 +341,19 @@ function drawChicken(){
   ctx.fillStyle='#ffb703'; ctx.fillRect(20,26,2,7); ctx.fillRect(26,26,2,7); ctx.fillRect(19,32,4,2); ctx.fillRect(25,32,4,2);
   if(game.bird.shieldTimer > 0){
     const shieldRatio = game.bird.shieldTimer / 10000;
-    ctx.strokeStyle = `rgba(142,202,230,${0.35 + shieldRatio * 0.65})`;
     ctx.lineWidth = 3;
+
+    ctx.strokeStyle = 'rgba(142,202,230,0.18)';
     ctx.beginPath();
-    ctx.arc(21,17,19,0,Math.PI * 2 * shieldRatio + 0.01);
+    ctx.arc(21,17,19,0,Math.PI * 2);
     ctx.stroke();
+
+    ctx.strokeStyle = `rgba(142,202,230,${0.45 + shieldRatio * 0.55})`;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.arc(21,17,19,-Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * shieldRatio);
+    ctx.stroke();
+    ctx.lineCap = 'butt';
   }
   ctx.restore();
 }
