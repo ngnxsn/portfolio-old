@@ -6,16 +6,16 @@ const levelEl = document.getElementById('level');
 const livesEl = document.getElementById('lives');
 
 const deathLines = [
-  'Thua roi. Con ga nay con binh tinh hon anh.',
-  'Relax anh oi, moi vai ong tre thoi ma.',
-  'Pha nay tay anh nhanh hon, moi toi luc bam sai.',
-  'Game thu gian ma anh choi nhu tra no vay.',
-  'Con ga bay con on hon nhan pham nay do.',
-  'Thua tiep cung duoc, dung cay voi con ga pixel la duoc.',
-  'Ong tre dung yen ma anh con lao vao thi em cung chiu.',
-  'Pha nay goi la tu nga chu game khong co xui anh.',
-  'Choi vui thoi, dung bien mot con ga thanh doi thu truyen kiep.',
-  'That bai la me thanh cong, nhung anh dang gap me hoi nhieu.'
+  'Pha này gọi là tự ngã chứ game chưa kịp chơi anh.',
+  'Bình tĩnh anh ơi, mới vài ống tre thôi mà đã gắt rồi.',
+  'Con gà pixel còn điềm đạm hơn anh ở pha vừa rồi.',
+  'Anh bấm rất nhiệt, tiếc là trúng mỗi chỗ không nên trúng.',
+  'Chơi thư giãn thôi, đừng biến con gà thành kẻ thù truyền kiếp.',
+  'Ống tre đứng yên mà anh còn lao vào thì em cũng chịu.',
+  'Pha này không phải xui, là phản xạ đang đi cà phê.',
+  'Thua thêm ván nữa cũng được, miễn đừng cay với con gà.',
+  'Game chưa khó lắm, chỉ là anh đang làm nó kịch tính quá.',
+  'Thất bại là mẹ thành công, còn anh đang gặp mẹ hơi nhiều.'
 ];
 
 const W = canvas.width;
@@ -329,9 +329,9 @@ function pixelText(text,cx,y,scale,color,center=false){
   }
 }
 function drawPanel(y,height=160){
-  ctx.fillStyle='#00000055'; ctx.fillRect(32,y,W-64,height);
-  ctx.fillStyle='#f7eed3'; ctx.fillRect(40,y+8,W-80,height-16);
-  ctx.fillStyle='#7a4a29'; ctx.fillRect(40,y+8,W-80,14);
+  ctx.fillStyle='#00000055'; ctx.fillRect(28,y,W-56,height);
+  ctx.fillStyle='#f7eed3'; ctx.fillRect(36,y+8,W-72,height-16);
+  ctx.fillStyle='#7a4a29'; ctx.fillRect(36,y+8,W-72,14);
 }
 function drawMultilineText(text, x, y, maxWidth, lineHeight){
   const words = String(text).split(' ');
@@ -353,24 +353,30 @@ function drawStartOverlay(){
   drawPanel(158,148);
   pixelText('START',W/2,190,4,'#3f3121',true);
   ctx.fillStyle='#6f6251';
-  ctx.font='bold 18px system-ui, Segoe UI, Arial, sans-serif';
+  ctx.font='700 20px system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Arial, sans-serif';
   ctx.textAlign='center';
-  ctx.fillText('Tap de bay', W/2, 250);
-  ctx.font='15px system-ui, Segoe UI, Arial, sans-serif';
-  ctx.fillText('Ne tre, vit va san diem', W/2, 280);
+  ctx.fillText('Chạm để bay', W/2, 248);
+  ctx.font='16px system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Arial, sans-serif';
+  ctx.fillText('Né tre, vịt và săn điểm', W/2, 280);
 }
 function drawGameOverOverlay(){
-  drawPanel(142,196);
-  pixelText('GAME OVER',W/2,174,4,'#3f3121',true);
-  ctx.fillStyle='#7a4a29';
-  ctx.font='bold 16px system-ui, Segoe UI, Arial, sans-serif';
+  drawPanel(132,222);
+  pixelText('GAME OVER',W/2,164,4,'#3f3121',true);
   ctx.textAlign='center';
-  ctx.fillText(`Best: ${best}`, W/2, 228);
+  ctx.fillStyle='#7a4a29';
+  ctx.font='700 16px system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Arial, sans-serif';
+  ctx.fillText('Điểm của anh', W/2, 206);
+  ctx.fillStyle='#b33a2b';
+  ctx.font='900 42px system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Arial, sans-serif';
+  ctx.fillText(String(game.score), W/2, 252);
+  ctx.fillStyle='#7a4a29';
+  ctx.font='700 15px system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Arial, sans-serif';
+  ctx.fillText(`Best: ${best}`, W/2, 278);
   ctx.fillStyle='#6f6251';
-  ctx.font='15px system-ui, Segoe UI, Arial, sans-serif';
-  drawMultilineText(game.deathLine, W/2, 264, 280, 22);
-  ctx.font='bold 15px system-ui, Segoe UI, Arial, sans-serif';
-  ctx.fillText('Tap de choi lai', W/2, 320);
+  ctx.font='16px system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Arial, sans-serif';
+  drawMultilineText(game.deathLine, W/2, 308, 290, 24);
+  ctx.font='700 15px system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Arial, sans-serif';
+  ctx.fillText('Chạm để chơi lại', W/2, 348);
 }
 function drawText(){
   pixelText('FLAPPY',W/2,54,4,'#fff9e6',true);
