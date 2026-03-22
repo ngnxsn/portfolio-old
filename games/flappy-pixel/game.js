@@ -98,27 +98,27 @@ function addPipe(){
   });
 }
 
-function getSafeItemY(){
-  const latestPipe = game.pipes[game.pipes.length - 1];
-  if(latestPipe){
-    const itemSize = 22;
-    const safeBandRatio = 0.22;
-    const innerTop = latestPipe.top + latestPipe.gap * safeBandRatio;
-    const innerBottom = latestPipe.top + latestPipe.gap * (1 - safeBandRatio) - itemSize;
-    if(innerBottom > innerTop) return innerTop + Math.random() * (innerBottom - innerTop);
-
-    const margin = 28;
-    const minY = latestPipe.top + margin;
-    const maxY = latestPipe.top + latestPipe.gap - itemSize - margin;
-    if(maxY > minY) return minY + Math.random() * (maxY - minY);
-  }
-  return 150 + Math.random() * (H - GROUND_H - 230);
-}
-
 function addItem(){
-  const y = getSafeItemY();
+  const targetPipe = game.pipes[game.pipes.length - 1];
+  if(!targetPipe) return;
   const type = Math.random() < 0.55 ? 'egg' : 'shield';
-  game.items.push({x:W + PIPE_W + 70, y, type, collected:false});
+  const itemSize = 22;
+  const safeBandRatio = 0.28;
+  const innerTop = targetPipe.top + targetPipe.gap * safeBandRatio;
+  const innerBottom = targetPipe.top + targetPipe.gap * (1 - safeBandRatio) - itemSize;
+  const y = innerBottom > innerTop
+    ? innerTop + Math.random() * (innerBottom - innerTop)
+    : targetPipe.top + (targetPipe.gap - itemSize) / 2;
+
+  game.items.push({
+    x: targetPipe.x + PIPE_W + 34,
+    y,
+    type,
+    collected:false,
+    anchorPipe: targetPipe,
+    offsetX: PIPE_W + 34,
+    offsetY: y - targetPipe.top,
+  });
 }
 
 function addDuck(){
@@ -200,7 +200,16 @@ function update(ts=0){
       }
     }
 
-    for(const item of game.items){ item.x -= speed * (dt / 16); }
+    for(const item of game.items){
+      if(item.anchorPipe && game.pipes.includes(item.anchorPipe)){
+        item.x = item.anchorPipe.x + item.offsetX;
+        const itemMinY = item.anchorPipe.top + 16;
+        const itemMaxY = item.anchorPipe.top + item.anchorPipe.gap - 38;
+        item.y = Math.max(itemMinY, Math.min(itemMaxY, item.anchorPipe.top + item.offsetY));
+      } else {
+        item.x -= speed * (dt / 16);
+      }
+    }
     for(const duck of game.ducks){
       duck.x -= (speed + 1.5) * (dt / 16);
       duck.y += Math.sin(ts / 150 + duck.flapOffset) * 0.45;
