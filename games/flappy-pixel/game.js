@@ -654,8 +654,10 @@ function drawGameOverOverlay(){
   ctx.fillText('Chạm để chơi lại', W/2, 376);
 }
 function drawText(){
-  pixelText('FLAPPY',W/2,54,4,'#fff9e6',true);
-  pixelText('GA',W/2,80,4,'#ffe082',true);
+  ctx.textAlign = 'center';
+  ctx.fillStyle = '#ffe082';
+  ctx.font = '900 24px system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Arial, sans-serif';
+  ctx.fillText('FLAPPY GÀ', W / 2, 72);
   if(!game.started && !game.over) drawStartOverlay();
   if(game.over) drawGameOverOverlay();
 }
@@ -716,3 +718,4 @@ canvas.addEventListener('touchstart', e => {
 window.addEventListener('gesturestart', e => e.preventDefault());
 reset();
 requestAnimationFrame(update);
+Frame(update);
