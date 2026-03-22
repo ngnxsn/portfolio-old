@@ -106,14 +106,19 @@ function addItem(){
   const roll = Math.random();
   const type = roll < 0.5 ? 'egg' : roll < 0.82 ? 'shield' : 'superShield';
   const itemSize = 22;
-  const edgeMargin = 10;
-  const upperY = targetPipe.top + edgeMargin;
-  const lowerY = targetPipe.top + targetPipe.gap - itemSize - edgeMargin;
-  const centerY = targetPipe.top + (targetPipe.gap - itemSize) / 2;
-  const sideBand = Math.max(26, targetPipe.gap * 0.28);
-  const direction = Math.random() < 0.5 ? -1 : 1;
-  let y = centerY + direction * (sideBand + Math.random() * Math.max(12, targetPipe.gap * 0.1));
-  y = Math.max(upperY, Math.min(lowerY, y));
+  const gapSpace = targetPipe.gap - itemSize;
+  if(gapSpace <= 36) return;
+
+  const bandSize = Math.max(18, gapSpace * 0.22);
+  const topBandStart = targetPipe.top + 10;
+  const topBandEnd = topBandStart + bandSize;
+  const bottomBandEnd = targetPipe.top + targetPipe.gap - itemSize - 10;
+  const bottomBandStart = bottomBandEnd - bandSize;
+  const useTopBand = Math.random() < 0.5;
+
+  const y = useTopBand
+    ? topBandStart + Math.random() * Math.max(4, topBandEnd - topBandStart)
+    : bottomBandStart + Math.random() * Math.max(4, bottomBandEnd - bottomBandStart);
 
   game.items.push({
     x: targetPipe.x + PIPE_W + 8,
@@ -121,7 +126,7 @@ function addItem(){
     type,
     collected:false,
     anchorPipe: targetPipe,
-    offsetX: PIPE_W + 34,
+    offsetX: PIPE_W + 8,
     offsetY: y - targetPipe.top,
   });
 }
