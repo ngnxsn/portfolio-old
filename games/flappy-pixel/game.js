@@ -62,6 +62,7 @@ function reset(){
     pipes:[],
     items:[],
     ducks:[],
+    popups:[],
     lastPipe:0,
     lastItem:0,
     lastDuck:0,
@@ -133,6 +134,17 @@ function flap(){
   if(!game.started){ game.started = true; }
   game.bird.vy = FLAP;
   sfxFlap();
+}
+
+function addPopup(text, color = '#fff7cc'){
+  game.popups.push({
+    text,
+    x: game.bird.x + game.bird.w / 2,
+    y: game.bird.y,
+    life: 900,
+    maxLife: 900,
+    color,
+  });
 }
 
 function rectsOverlap(a,b){
@@ -217,10 +229,15 @@ function update(ts=0){
       duck.x -= (speed + 1.5) * (dt / 16);
       duck.y += Math.sin(ts / 150 + duck.flapOffset) * 0.45;
     }
+    for(const popup of game.popups){
+      popup.y -= 0.45 * (dt / 16);
+      popup.life -= dt;
+    }
 
     game.pipes = game.pipes.filter(p => p.x + PIPE_W > -20);
     game.items = game.items.filter(i => i.x > -24 && !i.collected);
     game.ducks = game.ducks.filter(d => d.x + d.w > -20);
+    game.popups = game.popups.filter(p => p.life > 0);
 
     const birdBox = {x:game.bird.x+6, y:game.bird.y+4, w:game.bird.w-12, h:game.bird.h-8};
 
@@ -241,16 +258,21 @@ function update(ts=0){
         item.collected = true;
         sfxItem();
         if(item.type === 'egg'){
+          const wasFullLives = game.lives >= game.maxLives;
           game.lives = Math.min(game.maxLives, game.lives + 1);
           livesEl.textContent = game.lives;
-          if(game.lives >= game.maxLives){
+          if(wasFullLives){
             game.score += 1;
             scoreEl.textContent = game.score;
             levelEl.textContent = getLevel();
             sfxScore();
+            addPopup('+1 điểm (full mạng)', '#ffe082');
+          } else {
+            addPopup('+1 mạng', '#fff3b0');
           }
         } else {
           game.bird.shieldTimer = 10000;
+          addPopup('Khiên bất tử 10 giây', '#8ecae6');
         }
       }
     }
@@ -453,12 +475,28 @@ function drawText(){
   if(game.over) drawGameOverOverlay();
 }
 
+function drawPopups(){
+  ctx.textAlign = 'center';
+  ctx.font = '700 14px system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Arial, sans-serif';
+  for(const popup of game.popups){
+    const alpha = Math.max(0, popup.life / popup.maxLife);
+    ctx.globalAlpha = alpha;
+    ctx.strokeStyle = 'rgba(25,25,25,0.45)';
+    ctx.lineWidth = 4;
+    ctx.strokeText(popup.text, popup.x, popup.y);
+    ctx.fillStyle = popup.color;
+    ctx.fillText(popup.text, popup.x, popup.y);
+    ctx.globalAlpha = 1;
+  }
+}
+
 function draw(){
   drawBackground();
   for(const pipe of game.pipes) drawPipe(pipe);
   for(const item of game.items) drawItem(item);
   for(const duck of game.ducks) drawDuck(duck);
   drawChicken();
+  drawPopups();
   drawText();
 }
 
