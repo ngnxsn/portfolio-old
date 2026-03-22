@@ -654,10 +654,6 @@ function drawGameOverOverlay(){
   ctx.fillText('Chạm để chơi lại', W/2, 376);
 }
 function drawText(){
-  ctx.textAlign = 'center';
-  ctx.fillStyle = '#ffe082';
-  ctx.font = '900 24px system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Arial, sans-serif';
-  ctx.fillText('FLAPPY GÀ', W / 2, 72);
   if(!game.started && !game.over) drawStartOverlay();
   if(game.over) drawGameOverOverlay();
 }
