@@ -2,32 +2,21 @@ const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 const scoreEl = document.getElementById('score');
 const bestEl = document.getElementById('best');
-const statusEl = document.getElementById('status');
 const levelEl = document.getElementById('level');
 const livesEl = document.getElementById('lives');
-const tiplineEl = document.getElementById('tipline');
-
-function setStatus(text){ if(statusEl) statusEl.textContent = text; }
-function setTipline(text){ if(tiplineEl) tiplineEl.textContent = text; }
 
 const deathLines = [
-  'Chơi thư giãn thôi nhé, chứ gắt quá con gà cũng xin nghỉ việc.',
-  'Chúc mọi người giải trí nhẹ nhàng, đừng biến game thư giãn thành buổi tự kiểm điểm.',
-  'Cứ bình tĩnh mà chơi, game này không đáng để anh mất lòng tin vào phản xạ đâu.',
-  'Thua một cái thôi mà, xem như game đang nhắc mình sống chậm lại tí.',
-  'Mục tiêu là thư giãn nha, không phải chứng minh mình hơn một con gà pixel.',
-  'Chơi vui vẻ thôi, cay quá thì con gà cũng không biết dỗ đâu.',
-  'Game này để xả stress, đừng để vài ống tre làm anh stress ngược.',
-  'Rớt thì làm lại, miễn là đừng nhìn con gà như nhìn kẻ phản bội.',
-  'Chúc anh em chơi vui, lỡ thua thì đổ tại tay trượt chứ đừng đổ tại đời.',
-  'Thư giãn lên nào, thua vài ván chưa đủ để kết luận nhân sinh tàn nhẫn đâu.'
+  'Thua roi. Con ga nay con binh tinh hon anh.',
+  'Relax anh oi, moi vai ong tre thoi ma.',
+  'Pha nay tay anh nhanh hon, moi toi luc bam sai.',
+  'Game thu gian ma anh choi nhu tra no vay.',
+  'Con ga bay con on hon nhan pham nay do.',
+  'Thua tiep cung duoc, dung cay voi con ga pixel la duoc.',
+  'Ong tre dung yen ma anh con lao vao thi em cung chiu.',
+  'Pha nay goi la tu nga chu game khong co xui anh.',
+  'Choi vui thoi, dung bien mot con ga thanh doi thu truyen kiep.',
+  'That bai la me thanh cong, nhung anh dang gap me hoi nhieu.'
 ];
-
-function setRandomDeathLine(){
-  const next = deathLines[Math.floor(Math.random() * deathLines.length)];
-  setTipline(next);
-  return next;
-}
 
 const W = canvas.width;
 const H = canvas.height;
@@ -58,6 +47,10 @@ let best = Number(localStorage.getItem('flappyPixelBest') || 0);
 bestEl.textContent = best;
 let game;
 
+function pickDeathLine(){
+  return deathLines[Math.floor(Math.random() * deathLines.length)];
+}
+
 function reset(){
   game = {
     started:false,
@@ -74,13 +67,11 @@ function reset(){
     bgOffset:0,
     time:0,
     hitCooldown:0,
+    deathLine:pickDeathLine(),
   };
   scoreEl.textContent='0';
   levelEl.textContent='1';
   livesEl.textContent='1';
-  game.deathLine = deathLines[0];
-  setStatus('Nhấn để bắt đầu');
-  setTipline(game.deathLine);
 }
 
 function getLevel(){ return Math.floor(game.score / 4) + 1; }
@@ -119,7 +110,7 @@ function addDuck(){
 
 function flap(){
   if(game.over){ reset(); return; }
-  if(!game.started){ game.started = true; setStatus('Bay đi anh gà ơi'); }
+  if(!game.started){ game.started = true; }
   game.bird.vy = FLAP;
   sfxFlap();
 }
@@ -132,7 +123,6 @@ function hitBird(){
   if(game.hitCooldown > 0 || game.over) return;
   if(game.bird.shield > 0){
     game.bird.shield--;
-    setStatus('Khiên cứu anh một mạng đấy');
     sfxItem();
     game.hitCooldown = 40;
     return;
@@ -143,15 +133,13 @@ function hitBird(){
   game.hitCooldown = 50;
   if(game.lives <= 0){
     game.over = true;
-    setStatus('Gà rớt thật rồi. Nhấn để chơi lại');
-    game.deathLine = setRandomDeathLine();
+    game.deathLine = pickDeathLine();
     if(game.score > best){
       best = game.score;
       localStorage.setItem('flappyPixelBest', String(best));
       bestEl.textContent = best;
     }
   } else {
-    setStatus('Mất 1 mạng, bay cho tử tế lại');
     game.bird.y = Math.max(40, game.bird.y - 20);
     game.bird.vy = -3;
   }
@@ -224,10 +212,8 @@ function update(ts=0){
         if(item.type === 'egg'){
           game.lives = Math.min(2, game.lives + 1);
           livesEl.textContent = game.lives;
-          setStatus('Nhặt trứng +1 mạng');
         } else {
           game.bird.shield = Math.min(2, game.bird.shield + 1);
-          setStatus('Có khiên, đâm vịt hay tre đều bớt rén');
         }
       }
     }
@@ -342,40 +328,55 @@ function pixelText(text,cx,y,scale,color,center=false){
     x += charWidth;
   }
 }
-function drawPanel(y,title,sub,height=114){
-  ctx.fillStyle='#00000044'; ctx.fillRect(38,y,W-76,height);
-  ctx.fillStyle='#f7eed3'; ctx.fillRect(46,y+8,W-92,height-16);
-  ctx.fillStyle='#7a4a29'; ctx.fillRect(46,y+8,W-92,14);
-  pixelText(title,W/2,y+38,4,'#3f3121',true);
-  pixelText(sub,W/2,y+74,2,'#6f6251',true);
+function drawPanel(y,height=160){
+  ctx.fillStyle='#00000055'; ctx.fillRect(32,y,W-64,height);
+  ctx.fillStyle='#f7eed3'; ctx.fillRect(40,y+8,W-80,height-16);
+  ctx.fillStyle='#7a4a29'; ctx.fillRect(40,y+8,W-80,14);
 }
-function wrapTextLines(text, maxChars=26){
+function drawMultilineText(text, x, y, maxWidth, lineHeight){
   const words = String(text).split(' ');
-  const lines = [];
   let line = '';
+  const lines = [];
   for(const word of words){
-    const next = line ? `${line} ${word}` : word;
-    if(next.length > maxChars && line){ lines.push(line); line = word; }
-    else line = next;
+    const test = line ? `${line} ${word}` : word;
+    if(ctx.measureText(test).width > maxWidth && line){
+      lines.push(line);
+      line = word;
+    } else {
+      line = test;
+    }
   }
   if(line) lines.push(line);
-  return lines.slice(0,3);
+  lines.forEach((l, i) => ctx.fillText(l, x, y + i * lineHeight));
 }
-function drawCenterTextLines(lines, y, color='#6f6251', scale=2){
-  lines.forEach((line, i) => pixelText(line, W/2, y + i * (scale * 8), scale, color, true));
+function drawStartOverlay(){
+  drawPanel(158,148);
+  pixelText('START',W/2,190,4,'#3f3121',true);
+  ctx.fillStyle='#6f6251';
+  ctx.font='bold 18px system-ui, Segoe UI, Arial, sans-serif';
+  ctx.textAlign='center';
+  ctx.fillText('Tap de bay', W/2, 250);
+  ctx.font='15px system-ui, Segoe UI, Arial, sans-serif';
+  ctx.fillText('Ne tre, vit va san diem', W/2, 280);
+}
+function drawGameOverOverlay(){
+  drawPanel(142,196);
+  pixelText('GAME OVER',W/2,174,4,'#3f3121',true);
+  ctx.fillStyle='#7a4a29';
+  ctx.font='bold 16px system-ui, Segoe UI, Arial, sans-serif';
+  ctx.textAlign='center';
+  ctx.fillText(`Best: ${best}`, W/2, 228);
+  ctx.fillStyle='#6f6251';
+  ctx.font='15px system-ui, Segoe UI, Arial, sans-serif';
+  drawMultilineText(game.deathLine, W/2, 264, 280, 22);
+  ctx.font='bold 15px system-ui, Segoe UI, Arial, sans-serif';
+  ctx.fillText('Tap de choi lai', W/2, 320);
 }
 function drawText(){
   pixelText('FLAPPY',W/2,54,4,'#fff9e6',true);
   pixelText('GA PIXEL',W/2,80,4,'#ffe082',true);
-  if(!game.started && !game.over){
-    drawPanel(150,'START','TAP TO FLY',138);
-    drawCenterTextLines(['TAP DE BAT DAU','NE TRE VA VIT','CHOI THU GIAN THOI'],248,'#6f6251',2);
-  }
-  if(game.over){
-    drawPanel(150,'GAME OVER','TAP TO RETRY',154);
-    pixelText(`BEST ${best}`,W/2,248,2,'#fff7e0',true);
-    drawCenterTextLines(wrapTextLines(game.deathLine || deathLines[0],24),282,'#6f6251',2);
-  }
+  if(!game.started && !game.over) drawStartOverlay();
+  if(game.over) drawGameOverOverlay();
 }
 
 function draw(){
