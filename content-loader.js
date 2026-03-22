@@ -154,10 +154,23 @@
     setHref('behanceLink', data.behance);
     setHref('websiteLink', data.website);
     setHref('driveLink', data.drive);
+    setHref('miniGameLink', data.miniGameLink);
 
     const behanceText = document.getElementById('behanceLink');
     if (behanceText && data.behance) {
       behanceText.textContent = `Behance /${(data.behance.split('/').filter(Boolean).pop() || 'ngnxsn')}`;
+    }
+
+    const driveText = document.getElementById('driveLink');
+    if (driveText) {
+      driveText.textContent = data.driveText || 'Google Drive Portfolio';
+      driveText.style.display = data.drive ? '' : 'none';
+    }
+
+    const miniGameText = document.getElementById('miniGameLink');
+    if (miniGameText) {
+      miniGameText.textContent = data.miniGameText || 'Chơi thử mini game';
+      miniGameText.style.display = data.miniGameLink ? '' : 'none';
     }
 
     const websiteText = document.getElementById('websiteLink');
