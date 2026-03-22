@@ -57,7 +57,7 @@ function reset(){
     over:false,
     score:0,
     lives:1,
-    bird:{x:100,y:H/2-40,vy:0,w:42,h:34,frame:0,shield:0},
+    bird:{x:100,y:H/2-40,vy:0,w:42,h:34,frame:0,shieldTimer:0},
     pipes:[],
     items:[],
     ducks:[],
@@ -139,8 +139,8 @@ function rectsOverlap(a,b){
 
 function hitBird(){
   if(game.hitCooldown > 0 || game.over) return;
-  if(game.bird.shield > 0){
-    game.bird.shield--;
+  if(game.bird.shieldTimer > 0){
+    game.bird.shieldTimer = 0;
     sfxItem();
     game.hitCooldown = 40;
     return;
@@ -171,6 +171,7 @@ function update(ts=0){
 
   if(game.started && !game.over){
     if(game.hitCooldown > 0) game.hitCooldown -= dt / 16;
+    if(game.bird.shieldTimer > 0) game.bird.shieldTimer = Math.max(0, game.bird.shieldTimer - dt);
     game.bird.vy += GRAVITY * (dt / 16);
     game.bird.y += game.bird.vy * (dt / 16);
     game.bird.frame += dt / 140;
@@ -241,7 +242,7 @@ function update(ts=0){
           game.lives = Math.min(2, game.lives + 1);
           livesEl.textContent = game.lives;
         } else {
-          game.bird.shield = Math.min(2, game.bird.shield + 1);
+          game.bird.shieldTimer = 10000;
         }
       }
     }
@@ -338,7 +339,14 @@ function drawChicken(){
   ctx.fillStyle='#ffb4a2'; ctx.fillRect(25,15,2,2);
   ctx.fillStyle='#31572c'; ctx.fillRect(6,10,4,4); ctx.fillStyle='#40916c'; ctx.fillRect(4,14,5,4); ctx.fillStyle='#90a955'; ctx.fillRect(6,18,4,4);
   ctx.fillStyle='#ffb703'; ctx.fillRect(20,26,2,7); ctx.fillRect(26,26,2,7); ctx.fillRect(19,32,4,2); ctx.fillRect(25,32,4,2);
-  if(game.bird.shield>0){ ctx.strokeStyle='#8ecae6'; ctx.lineWidth=3; ctx.beginPath(); ctx.arc(21,17,19,0,Math.PI*2); ctx.stroke(); }
+  if(game.bird.shieldTimer > 0){
+    const shieldRatio = game.bird.shieldTimer / 10000;
+    ctx.strokeStyle = `rgba(142,202,230,${0.35 + shieldRatio * 0.65})`;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.arc(21,17,19,0,Math.PI * 2 * shieldRatio + 0.01);
+    ctx.stroke();
+  }
   ctx.restore();
 }
 
