@@ -6,16 +6,16 @@ const levelEl = document.getElementById('level');
 const livesEl = document.getElementById('lives');
 
 const deathLines = [
-  'Pha này gọi là tự ngã chứ game chưa kịp chơi anh.',
-  'Bình tĩnh anh ơi, mới vài ống tre thôi mà đã gắt rồi.',
-  'Con gà pixel còn điềm đạm hơn anh ở pha vừa rồi.',
-  'Anh bấm rất nhiệt, tiếc là trúng mỗi chỗ không nên trúng.',
+  'Pha này gọi là tự ngã chứ game chưa kịp chơi bạn.',
+  'Bình tĩnh thôi, mới vài ống tre mà đã gắt rồi.',
+  'Con gà pixel còn điềm đạm hơn bạn ở pha vừa rồi.',
+  'Bạn bấm rất nhiệt, tiếc là trúng mỗi chỗ không nên trúng.',
   'Chơi thư giãn thôi, đừng biến con gà thành kẻ thù truyền kiếp.',
-  'Ống tre đứng yên mà anh còn lao vào thì em cũng chịu.',
+  'Ống tre đứng yên mà bạn còn lao vào thì tôi cũng chịu.',
   'Pha này không phải xui, là phản xạ đang đi cà phê.',
   'Thua thêm ván nữa cũng được, miễn đừng cay với con gà.',
-  'Game chưa khó lắm, chỉ là anh đang làm nó kịch tính quá.',
-  'Thất bại là mẹ thành công, còn anh đang gặp mẹ hơi nhiều.'
+  'Game chưa khó lắm, chỉ là bạn đang làm nó kịch tính quá.',
+  'Thất bại là mẹ thành công, còn bạn đang gặp mẹ hơi nhiều.'
 ];
 
 const W = canvas.width;
