@@ -120,13 +120,14 @@ function addItem(){
     ? topBandStart + Math.random() * Math.max(4, topBandEnd - topBandStart)
     : bottomBandStart + Math.random() * Math.max(4, bottomBandEnd - bottomBandStart);
 
+  const itemOffsetX = PIPE_W + 44;
   game.items.push({
-    x: targetPipe.x + PIPE_W + 8,
+    x: targetPipe.x + itemOffsetX,
     y,
     type,
     collected:false,
     anchorPipe: targetPipe,
-    offsetX: PIPE_W + 8,
+    offsetX: itemOffsetX,
     offsetY: y - targetPipe.top,
   });
 }
