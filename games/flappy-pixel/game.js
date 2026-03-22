@@ -50,7 +50,8 @@ const assets = {
   ],
   egg: loadImage('assets/egg.png'),
   shield: loadImage('assets/shield.png'),
-  superShield: loadImage('assets/super-shield.png')
+  superShield: loadImage('assets/super-shield.png'),
+  title: loadImage('assets/title.png')
 };
 
 function loadImage(src){
@@ -654,6 +655,11 @@ function drawGameOverOverlay(){
   ctx.fillText('Chạm để chơi lại', W/2, 376);
 }
 function drawText(){
+  if(assets.title && assets.title.complete && assets.title.naturalWidth){
+    const titleWidth = 220;
+    const titleHeight = titleWidth * (assets.title.naturalHeight / assets.title.naturalWidth);
+    ctx.drawImage(assets.title, W / 2 - titleWidth / 2, 26, titleWidth, titleHeight);
+  }
   if(!game.started && !game.over) drawStartOverlay();
   if(game.over) drawGameOverOverlay();
 }
