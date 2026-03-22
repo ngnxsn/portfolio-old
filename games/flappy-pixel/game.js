@@ -374,27 +374,27 @@ function drawArcadeScore(value, x, y){
   ctx.fillText(String(value), x, y);
 }
 function drawGameOverOverlay(){
-  drawPanel(124,238);
-  pixelText('GAME OVER',W/2,156,4,'#3f3121',true);
+  drawPanel(110,276);
+  pixelText('GAME OVER',W/2,146,4,'#3f3121',true);
   ctx.textAlign='center';
   ctx.fillStyle='#7a4a29';
   ctx.font='700 16px system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Arial, sans-serif';
-  ctx.fillText('Điểm của anh', W/2, 198);
+  ctx.fillText('Điểm của anh', W/2, 188);
   ctx.font='900 42px system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Arial, sans-serif';
-  drawArcadeScore(game.score, W/2, 246);
+  drawArcadeScore(game.score, W/2, 236);
   ctx.fillStyle='#7a4a29';
   ctx.font='700 15px system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Arial, sans-serif';
-  ctx.fillText(`Best: ${best}`, W/2, 274);
+  ctx.fillText(`Best: ${best}`, W/2, 268);
   if(game.newBest){
     ctx.fillStyle='#d62828';
     ctx.font='800 16px system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Arial, sans-serif';
-    ctx.fillText('Điểm kỷ lục mới!', W/2, 298);
+    ctx.fillText('Điểm kỷ lục mới!', W/2, 294);
   }
   ctx.fillStyle='#6f6251';
   ctx.font='16px system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Arial, sans-serif';
-  drawMultilineText(game.deathLine, W/2, game.newBest ? 328 : 308, 290, 24);
+  drawMultilineText(game.deathLine, W/2, game.newBest ? 326 : 300, 280, 24);
   ctx.font='700 15px system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Arial, sans-serif';
-  ctx.fillText('Chạm để chơi lại', W/2, 360);
+  ctx.fillText('Chạm để chơi lại', W/2, 376);
 }
 function drawText(){
   pixelText('FLAPPY',W/2,54,4,'#fff9e6',true);
