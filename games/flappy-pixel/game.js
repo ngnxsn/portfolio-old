@@ -7,6 +7,9 @@ const levelEl = document.getElementById('level');
 const livesEl = document.getElementById('lives');
 const tiplineEl = document.getElementById('tipline');
 
+function setStatus(text){ if(statusEl) statusEl.textContent = text; }
+function setTipline(text){ if(tiplineEl) tiplineEl.textContent = text; }
+
 const deathLines = [
   'Chơi thư giãn thôi nhé, chứ gắt quá con gà cũng xin nghỉ việc.',
   'Chúc mọi người giải trí nhẹ nhàng, đừng biến game thư giãn thành buổi tự kiểm điểm.',
@@ -21,9 +24,9 @@ const deathLines = [
 ];
 
 function setRandomDeathLine(){
-  if(!tiplineEl) return;
   const next = deathLines[Math.floor(Math.random() * deathLines.length)];
-  tiplineEl.textContent = next;
+  setTipline(next);
+  return next;
 }
 
 const W = canvas.width;
@@ -75,10 +78,9 @@ function reset(){
   scoreEl.textContent='0';
   levelEl.textContent='1';
   livesEl.textContent='1';
-  statusEl.textContent='Nhấn để bắt đầu';
-  if(tiplineEl && !tiplineEl.textContent.trim()){
-    tiplineEl.textContent = deathLines[0];
-  }
+  game.deathLine = deathLines[0];
+  setStatus('Nhấn để bắt đầu');
+  setTipline(game.deathLine);
 }
 
 function getLevel(){ return Math.floor(game.score / 4) + 1; }
@@ -117,7 +119,7 @@ function addDuck(){
 
 function flap(){
   if(game.over){ reset(); return; }
-  if(!game.started){ game.started = true; statusEl.textContent = 'Bay đi anh gà ơi'; }
+  if(!game.started){ game.started = true; setStatus('Bay đi anh gà ơi'); }
   game.bird.vy = FLAP;
   sfxFlap();
 }
@@ -130,7 +132,7 @@ function hitBird(){
   if(game.hitCooldown > 0 || game.over) return;
   if(game.bird.shield > 0){
     game.bird.shield--;
-    statusEl.textContent = 'Khiên cứu anh một mạng đấy';
+    setStatus('Khiên cứu anh một mạng đấy');
     sfxItem();
     game.hitCooldown = 40;
     return;
@@ -141,15 +143,15 @@ function hitBird(){
   game.hitCooldown = 50;
   if(game.lives <= 0){
     game.over = true;
-    statusEl.textContent = 'Gà rớt thật rồi. Nhấn để chơi lại';
-    setRandomDeathLine();
+    setStatus('Gà rớt thật rồi. Nhấn để chơi lại');
+    game.deathLine = setRandomDeathLine();
     if(game.score > best){
       best = game.score;
       localStorage.setItem('flappyPixelBest', String(best));
       bestEl.textContent = best;
     }
   } else {
-    statusEl.textContent = 'Mất 1 mạng, bay cho tử tế lại';
+    setStatus('Mất 1 mạng, bay cho tử tế lại');
     game.bird.y = Math.max(40, game.bird.y - 20);
     game.bird.vy = -3;
   }
@@ -222,10 +224,10 @@ function update(ts=0){
         if(item.type === 'egg'){
           game.lives = Math.min(2, game.lives + 1);
           livesEl.textContent = game.lives;
-          statusEl.textContent = 'Nhặt trứng +1 mạng';
+          setStatus('Nhặt trứng +1 mạng');
         } else {
           game.bird.shield = Math.min(2, game.bird.shield + 1);
-          statusEl.textContent = 'Có khiên, đâm vịt hay tre đều bớt rén';
+          setStatus('Có khiên, đâm vịt hay tre đều bớt rén');
         }
       }
     }
@@ -340,18 +342,40 @@ function pixelText(text,cx,y,scale,color,center=false){
     x += charWidth;
   }
 }
-function drawPanel(y,title,sub){
-  ctx.fillStyle='#00000044'; ctx.fillRect(52,y,W-104,114);
-  ctx.fillStyle='#f7eed3'; ctx.fillRect(60,y+8,W-120,98);
-  ctx.fillStyle='#7a4a29'; ctx.fillRect(60,y+8,W-120,14);
+function drawPanel(y,title,sub,height=114){
+  ctx.fillStyle='#00000044'; ctx.fillRect(38,y,W-76,height);
+  ctx.fillStyle='#f7eed3'; ctx.fillRect(46,y+8,W-92,height-16);
+  ctx.fillStyle='#7a4a29'; ctx.fillRect(46,y+8,W-92,14);
   pixelText(title,W/2,y+38,4,'#3f3121',true);
   pixelText(sub,W/2,y+74,2,'#6f6251',true);
+}
+function wrapTextLines(text, maxChars=26){
+  const words = String(text).split(' ');
+  const lines = [];
+  let line = '';
+  for(const word of words){
+    const next = line ? `${line} ${word}` : word;
+    if(next.length > maxChars && line){ lines.push(line); line = word; }
+    else line = next;
+  }
+  if(line) lines.push(line);
+  return lines.slice(0,3);
+}
+function drawCenterTextLines(lines, y, color='#6f6251', scale=2){
+  lines.forEach((line, i) => pixelText(line, W/2, y + i * (scale * 8), scale, color, true));
 }
 function drawText(){
   pixelText('FLAPPY',W/2,54,4,'#fff9e6',true);
   pixelText('GA PIXEL',W/2,80,4,'#ffe082',true);
-  if(!game.started && !game.over) drawPanel(170,'START','SPACE OR CLICK');
-  if(game.over){ drawPanel(160,'GAME OVER','CLICK TO RETRY'); pixelText(`BEST ${best}`,W/2,282,2,'#fff7e0',true); }
+  if(!game.started && !game.over){
+    drawPanel(150,'START','TAP TO FLY',138);
+    drawCenterTextLines(['TAP DE BAT DAU','NE TRE VA VIT','CHOI THU GIAN THOI'],248,'#6f6251',2);
+  }
+  if(game.over){
+    drawPanel(150,'GAME OVER','TAP TO RETRY',154);
+    pixelText(`BEST ${best}`,W/2,248,2,'#fff7e0',true);
+    drawCenterTextLines(wrapTextLines(game.deathLine || deathLines[0],24),282,'#6f6251',2);
+  }
 }
 
 function draw(){
@@ -366,6 +390,13 @@ function draw(){
 window.addEventListener('keydown', e => {
   if(e.code === 'Space'){ e.preventDefault(); flap(); }
 });
-canvas.addEventListener('pointerdown', flap);
+canvas.addEventListener('pointerdown', e => {
+  e.preventDefault();
+  flap();
+});
+canvas.addEventListener('touchstart', e => {
+  e.preventDefault();
+}, { passive: false });
+window.addEventListener('gesturestart', e => e.preventDefault());
 reset();
 requestAnimationFrame(update);
