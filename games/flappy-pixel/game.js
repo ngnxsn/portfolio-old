@@ -58,7 +58,7 @@ function reset(){
     score:0,
     lives:1,
     maxLives:3,
-    bird:{x:100,y:H/2-40,vy:0,w:42,h:34,frame:0,shieldTimer:0},
+    bird:{x:100,y:H/2-40,vy:0,w:42,h:34,frame:0,shieldTimer:0,invincibleTimer:0,shieldUsed:false},
     pipes:[],
     items:[],
     ducks:[],
@@ -103,7 +103,8 @@ function addPipe(){
 function addItem(){
   const targetPipe = game.pipes[game.pipes.length - 1];
   if(!targetPipe) return;
-  const type = Math.random() < 0.55 ? 'egg' : 'shield';
+  const roll = Math.random();
+  const type = roll < 0.5 ? 'egg' : roll < 0.82 ? 'shield' : 'superShield';
   const itemSize = 22;
   const upperY = targetPipe.top + 18;
   const lowerY = targetPipe.top + targetPipe.gap - itemSize - 18;
@@ -153,7 +154,13 @@ function rectsOverlap(a,b){
 
 function hitBird(){
   if(game.hitCooldown > 0 || game.over) return;
-  if(game.bird.shieldTimer > 0){
+  if(game.bird.invincibleTimer > 0){
+    sfxItem();
+    game.hitCooldown = 16;
+    return;
+  }
+  if(game.bird.shieldTimer > 0 && !game.bird.shieldUsed){
+    game.bird.shieldUsed = true;
     game.bird.shieldTimer = 0;
     sfxItem();
     game.hitCooldown = 40;
@@ -186,6 +193,7 @@ function update(ts=0){
   if(game.started && !game.over){
     if(game.hitCooldown > 0) game.hitCooldown -= dt / 16;
     if(game.bird.shieldTimer > 0) game.bird.shieldTimer = Math.max(0, game.bird.shieldTimer - dt);
+    if(game.bird.invincibleTimer > 0) game.bird.invincibleTimer = Math.max(0, game.bird.invincibleTimer - dt);
     game.bird.vy += GRAVITY * (dt / 16);
     game.bird.y += game.bird.vy * (dt / 16);
     game.bird.frame += dt / 140;
@@ -270,9 +278,13 @@ function update(ts=0){
           } else {
             addPopup('+1 mạng', '#fff3b0');
           }
-        } else {
+        } else if(item.type === 'shield') {
           game.bird.shieldTimer = 10000;
-          addPopup('Khiên bất tử 10 giây', '#8ecae6');
+          game.bird.shieldUsed = false;
+          addPopup('Chặn 1 lần trong 10 giây', '#8ecae6');
+        } else {
+          game.bird.invincibleTimer = 5000;
+          addPopup('Bất tử hoàn toàn 5 giây', '#ffb703');
         }
       }
     }
@@ -339,9 +351,13 @@ function drawItem(item){
   if(item.type==='egg'){
     ctx.fillStyle='#fff8e7'; ctx.fillRect(item.x+6,item.y+2,10,16);
     ctx.fillStyle='#e9dbc1'; ctx.fillRect(item.x+8,item.y+4,6,12);
-  } else {
+  } else if(item.type==='shield') {
     ctx.fillStyle='#74c0fc'; ctx.fillRect(item.x+4,item.y+4,14,14);
     ctx.fillStyle='#d0ebff'; ctx.fillRect(item.x+8,item.y+0,6,22);
+  } else {
+    ctx.fillStyle='#ffb703'; ctx.fillRect(item.x+4,item.y+4,14,14);
+    ctx.fillStyle='#ffd166'; ctx.fillRect(item.x+8,item.y+0,6,22);
+    ctx.fillStyle='#fff3b0'; ctx.fillRect(item.x+6,item.y+6,10,10);
   }
 }
 function drawDuck(d){
@@ -369,15 +385,26 @@ function drawChicken(){
   ctx.fillStyle='#ffb4a2'; ctx.fillRect(25,15,2,2);
   ctx.fillStyle='#31572c'; ctx.fillRect(6,10,4,4); ctx.fillStyle='#40916c'; ctx.fillRect(4,14,5,4); ctx.fillStyle='#90a955'; ctx.fillRect(6,18,4,4);
   ctx.fillStyle='#ffb703'; ctx.fillRect(20,26,2,7); ctx.fillRect(26,26,2,7); ctx.fillRect(19,32,4,2); ctx.fillRect(25,32,4,2);
-  if(game.bird.shieldTimer > 0){
+  if(game.bird.invincibleTimer > 0){
+    const invRatio = game.bird.invincibleTimer / 5000;
+    ctx.lineWidth = 4;
+    ctx.strokeStyle = 'rgba(255,183,3,0.18)';
+    ctx.beginPath();
+    ctx.arc(21,17,22,0,Math.PI * 2);
+    ctx.stroke();
+    ctx.strokeStyle = `rgba(255,183,3,${0.5 + invRatio * 0.5})`;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.arc(21,17,22,-Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * invRatio);
+    ctx.stroke();
+    ctx.lineCap = 'butt';
+  } else if(game.bird.shieldTimer > 0){
     const shieldRatio = game.bird.shieldTimer / 10000;
     ctx.lineWidth = 3;
-
     ctx.strokeStyle = 'rgba(142,202,230,0.18)';
     ctx.beginPath();
     ctx.arc(21,17,19,0,Math.PI * 2);
     ctx.stroke();
-
     ctx.strokeStyle = `rgba(142,202,230,${0.45 + shieldRatio * 0.55})`;
     ctx.lineCap = 'round';
     ctx.beginPath();
