@@ -106,17 +106,17 @@ function addItem(){
   const roll = Math.random();
   const type = roll < 0.5 ? 'egg' : roll < 0.82 ? 'shield' : 'superShield';
   const itemSize = 22;
-  const edgeMargin = 14;
+  const edgeMargin = 10;
   const upperY = targetPipe.top + edgeMargin;
   const lowerY = targetPipe.top + targetPipe.gap - itemSize - edgeMargin;
   const centerY = targetPipe.top + (targetPipe.gap - itemSize) / 2;
-  const sideBand = Math.max(18, targetPipe.gap * 0.22);
+  const sideBand = Math.max(26, targetPipe.gap * 0.28);
   const direction = Math.random() < 0.5 ? -1 : 1;
-  let y = centerY + direction * (sideBand + Math.random() * Math.max(10, targetPipe.gap * 0.08));
+  let y = centerY + direction * (sideBand + Math.random() * Math.max(12, targetPipe.gap * 0.1));
   y = Math.max(upperY, Math.min(lowerY, y));
 
   game.items.push({
-    x: targetPipe.x + PIPE_W + 18,
+    x: targetPipe.x + PIPE_W + 8,
     y,
     type,
     collected:false,
@@ -212,7 +212,7 @@ function update(ts=0){
 
     for(const pipe of game.pipes){
       pipe.x -= speed * (dt / 16);
-      if(pipe.moving) pipe.top += Math.sin(ts / 480 + pipe.phase) * (0.55 + getLevel() * 0.03);
+      if(pipe.moving) pipe.top += Math.sin(ts / 680 + pipe.phase) * (0.32 + getLevel() * 0.018);
       pipe.top = Math.max(70, Math.min(pipe.top, H - GROUND_H - pipe.gap - 70));
       pipe.tilt = pipe.tilting ? Math.sin(ts / 300 + pipe.phase) * pipe.tiltAmp : 0;
       if(!pipe.scored && pipe.x + PIPE_W < game.bird.x){
