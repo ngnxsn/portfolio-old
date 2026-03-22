@@ -656,9 +656,9 @@ function drawGameOverOverlay(){
 }
 function drawText(){
   if(assets.title && assets.title.complete && assets.title.naturalWidth){
-    const titleWidth = 660;
+    const titleWidth = 440;
     const titleHeight = titleWidth * (assets.title.naturalHeight / assets.title.naturalWidth);
-    ctx.drawImage(assets.title, W / 2 - titleWidth / 2, 12, titleWidth, titleHeight);
+    ctx.drawImage(assets.title, W / 2 - titleWidth / 2, 18, titleWidth, titleHeight);
   }
   if(!game.started && !game.over) drawStartOverlay();
   if(game.over) drawGameOverOverlay();
