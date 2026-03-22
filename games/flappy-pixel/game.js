@@ -102,7 +102,12 @@ function getSafeItemY(){
   const latestPipe = game.pipes[game.pipes.length - 1];
   if(latestPipe){
     const itemSize = 22;
-    const margin = 18;
+    const safeBandRatio = 0.22;
+    const innerTop = latestPipe.top + latestPipe.gap * safeBandRatio;
+    const innerBottom = latestPipe.top + latestPipe.gap * (1 - safeBandRatio) - itemSize;
+    if(innerBottom > innerTop) return innerTop + Math.random() * (innerBottom - innerTop);
+
+    const margin = 28;
     const minY = latestPipe.top + margin;
     const maxY = latestPipe.top + latestPipe.gap - itemSize - margin;
     if(maxY > minY) return minY + Math.random() * (maxY - minY);
