@@ -106,16 +106,17 @@ function addItem(){
   const roll = Math.random();
   const type = roll < 0.5 ? 'egg' : roll < 0.82 ? 'shield' : 'superShield';
   const itemSize = 22;
-  const upperY = targetPipe.top + 18;
-  const lowerY = targetPipe.top + targetPipe.gap - itemSize - 18;
+  const edgeMargin = 14;
+  const upperY = targetPipe.top + edgeMargin;
+  const lowerY = targetPipe.top + targetPipe.gap - itemSize - edgeMargin;
   const centerY = targetPipe.top + (targetPipe.gap - itemSize) / 2;
-  const offsetRange = Math.max(10, targetPipe.gap * 0.16);
+  const sideBand = Math.max(18, targetPipe.gap * 0.22);
   const direction = Math.random() < 0.5 ? -1 : 1;
-  let y = centerY + direction * (offsetRange * (0.75 + Math.random() * 0.25));
+  let y = centerY + direction * (sideBand + Math.random() * Math.max(10, targetPipe.gap * 0.08));
   y = Math.max(upperY, Math.min(lowerY, y));
 
   game.items.push({
-    x: targetPipe.x + PIPE_W + 34,
+    x: targetPipe.x + PIPE_W + 18,
     y,
     type,
     collected:false,
@@ -281,7 +282,7 @@ function update(ts=0){
         } else if(item.type === 'shield') {
           game.bird.shieldTimer = 10000;
           game.bird.shieldUsed = false;
-          addPopup('Chặn 1 lần trong 10 giây', '#8ecae6');
+          addPopup('Bảo vệ 1 lần trong 10 giây', '#8ecae6');
         } else {
           game.bird.invincibleTimer = 5000;
           addPopup('Bất tử hoàn toàn 5 giây', '#ffb703');
