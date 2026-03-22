@@ -98,10 +98,22 @@ function addPipe(){
   });
 }
 
+function getSafeItemY(){
+  const latestPipe = game.pipes[game.pipes.length - 1];
+  if(latestPipe){
+    const itemSize = 22;
+    const margin = 18;
+    const minY = latestPipe.top + margin;
+    const maxY = latestPipe.top + latestPipe.gap - itemSize - margin;
+    if(maxY > minY) return minY + Math.random() * (maxY - minY);
+  }
+  return 150 + Math.random() * (H - GROUND_H - 230);
+}
+
 function addItem(){
-  let y = 150 + Math.random() * (H - GROUND_H - 230);
+  const y = getSafeItemY();
   const type = Math.random() < 0.55 ? 'egg' : 'shield';
-  game.items.push({x:W + 50, y, type, collected:false});
+  game.items.push({x:W + PIPE_W + 70, y, type, collected:false});
 }
 
 function addDuck(){
