@@ -57,6 +57,7 @@ function reset(){
     over:false,
     score:0,
     lives:1,
+    maxLives:3,
     bird:{x:100,y:H/2-40,vy:0,w:42,h:34,frame:0,shieldTimer:0},
     pipes:[],
     items:[],
@@ -103,12 +104,13 @@ function addItem(){
   if(!targetPipe) return;
   const type = Math.random() < 0.55 ? 'egg' : 'shield';
   const itemSize = 22;
-  const safeBandRatio = 0.28;
-  const innerTop = targetPipe.top + targetPipe.gap * safeBandRatio;
-  const innerBottom = targetPipe.top + targetPipe.gap * (1 - safeBandRatio) - itemSize;
-  const y = innerBottom > innerTop
-    ? innerTop + Math.random() * (innerBottom - innerTop)
-    : targetPipe.top + (targetPipe.gap - itemSize) / 2;
+  const upperY = targetPipe.top + 18;
+  const lowerY = targetPipe.top + targetPipe.gap - itemSize - 18;
+  const centerY = targetPipe.top + (targetPipe.gap - itemSize) / 2;
+  const offsetRange = Math.max(10, targetPipe.gap * 0.16);
+  const direction = Math.random() < 0.5 ? -1 : 1;
+  let y = centerY + direction * (offsetRange * (0.75 + Math.random() * 0.25));
+  y = Math.max(upperY, Math.min(lowerY, y));
 
   game.items.push({
     x: targetPipe.x + PIPE_W + 34,
@@ -239,8 +241,14 @@ function update(ts=0){
         item.collected = true;
         sfxItem();
         if(item.type === 'egg'){
-          game.lives = Math.min(2, game.lives + 1);
+          game.lives = Math.min(game.maxLives, game.lives + 1);
           livesEl.textContent = game.lives;
+          if(game.lives >= game.maxLives){
+            game.score += 1;
+            scoreEl.textContent = game.score;
+            levelEl.textContent = getLevel();
+            sfxScore();
+          }
         } else {
           game.bird.shieldTimer = 10000;
         }
