@@ -84,8 +84,8 @@ function getGap(){ return Math.max(88, BASE_GAP - (getLevel()-1) * 9); }
 function addPipe(){
   const gap = getGap();
   const top = 110 + Math.random() * (H - GROUND_H - gap - 200);
-  const moving = getLevel() >= 4 && Math.random() < 0.85;
-  const tilting = getLevel() >= 6 && Math.random() < 0.7;
+  const moving = getLevel() >= 5 && Math.random() < 0.55;
+  const tilting = getLevel() >= 7 && Math.random() < 0.38;
   game.pipes.push({
     x: W + 30,
     top,
@@ -94,8 +94,8 @@ function addPipe(){
     moving,
     tilting,
     phase: Math.random() * Math.PI * 2,
-    amp: moving ? 18 + getLevel() * 2.5 : 0,
-    tiltAmp: tilting ? Math.min(14, 4 + getLevel() * 0.7) : 0,
+    amp: moving ? 10 + getLevel() * 1.2 : 0,
+    tiltAmp: tilting ? Math.min(7, 2 + getLevel() * 0.35) : 0,
     tilt: 0,
   });
 }
@@ -212,7 +212,7 @@ function update(ts=0){
 
     for(const pipe of game.pipes){
       pipe.x -= speed * (dt / 16);
-      if(pipe.moving) pipe.top += Math.sin(ts / 350 + pipe.phase) * (1.1 + getLevel() * 0.06);
+      if(pipe.moving) pipe.top += Math.sin(ts / 480 + pipe.phase) * (0.55 + getLevel() * 0.03);
       pipe.top = Math.max(70, Math.min(pipe.top, H - GROUND_H - pipe.gap - 70));
       pipe.tilt = pipe.tilting ? Math.sin(ts / 300 + pipe.phase) * pipe.tiltAmp : 0;
       if(!pipe.scored && pipe.x + PIPE_W < game.bird.x){
