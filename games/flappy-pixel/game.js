@@ -106,28 +106,22 @@ function addItem(){
   const roll = Math.random();
   const type = roll < 0.5 ? 'egg' : roll < 0.82 ? 'shield' : 'superShield';
   const itemSize = 22;
-  const gapSpace = targetPipe.gap - itemSize;
-  if(gapSpace <= 36) return;
-
-  const bandSize = Math.max(18, gapSpace * 0.22);
-  const topBandStart = targetPipe.top + 10;
-  const topBandEnd = topBandStart + bandSize;
-  const bottomBandEnd = targetPipe.top + targetPipe.gap - itemSize - 10;
-  const bottomBandStart = bottomBandEnd - bandSize;
-
-  const topCandidate = topBandStart + Math.random() * Math.max(4, topBandEnd - topBandStart);
-  const bottomCandidate = bottomBandStart + Math.random() * Math.max(4, bottomBandEnd - bottomBandStart);
+  const gapTop = targetPipe.top;
+  const gapBottom = targetPipe.top + targetPipe.gap - itemSize;
+  const gapMid = gapTop + (targetPipe.gap - itemSize) / 2;
   const birdCurrentY = game.bird.y + game.bird.h / 2;
-  const topDistance = Math.abs(topCandidate - birdCurrentY);
-  const bottomDistance = Math.abs(bottomCandidate - birdCurrentY);
 
-  let y = topDistance > bottomDistance ? topCandidate : bottomCandidate;
-  const minDistanceFromBird = 85;
-  if(Math.abs(y - birdCurrentY) < minDistanceFromBird){
-    y = y < birdCurrentY ? topBandStart : bottomBandEnd;
-  }
+  const topZoneStart = gapTop + 10;
+  const topZoneEnd = gapTop + Math.max(22, targetPipe.gap * 0.24);
+  const bottomZoneStart = gapBottom - Math.max(22, targetPipe.gap * 0.24);
+  const bottomZoneEnd = gapBottom - 10;
 
-  const itemOffsetX = PIPE_W + 70;
+  const forceOppositeHalf = birdCurrentY < gapMid;
+  const y = forceOppositeHalf
+    ? bottomZoneStart + Math.random() * Math.max(6, bottomZoneEnd - bottomZoneStart)
+    : topZoneStart + Math.random() * Math.max(6, topZoneEnd - topZoneStart);
+
+  const itemOffsetX = PIPE_W + 78;
   game.items.push({
     x: targetPipe.x + itemOffsetX,
     y,
