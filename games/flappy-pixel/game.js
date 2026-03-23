@@ -727,17 +727,28 @@ function draw(){
   drawText();
 }
 
-window.addEventListener('keydown', e => {
-  if(e.code === 'Space'){ e.preventDefault(); flap(); }
-});
+function handleSpacePress(e){
+  if(e.code === 'Space' || e.key === ' ' || e.key === 'Spacebar'){
+    e.preventDefault();
+    flap();
+  }
+}
+
+window.addEventListener('keydown', handleSpacePress, { capture: true });
+document.addEventListener('keydown', handleSpacePress, { capture: true });
+canvas.addEventListener('keydown', handleSpacePress);
 canvas.addEventListener('pointerdown', e => {
   e.preventDefault();
+  canvas.focus();
   flap();
 });
+canvas.addEventListener('mousedown', () => canvas.focus());
 canvas.addEventListener('touchstart', e => {
   e.preventDefault();
+  canvas.focus();
 }, { passive: false });
 window.addEventListener('gesturestart', e => e.preventDefault());
+window.addEventListener('load', () => canvas.focus());
 reset();
 requestAnimationFrame(update);
 Frame(update);
