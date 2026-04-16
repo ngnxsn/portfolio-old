@@ -397,6 +397,11 @@ h1 span {
   gap: 12px;
   justify-content: center;
 }
+.contact-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
 .contact-item {
   display: flex;
   align-items: center;
@@ -415,6 +420,20 @@ h1 span {
 .contact-highlight {
   background: linear-gradient(135deg, rgba(124,92,255,.88), rgba(45,212,255,.88));
   color: #fff;
+}
+.contact-half {
+  min-width: 0;
+}
+.contact-zalo {
+  background: linear-gradient(135deg, rgba(0, 145, 255, .22), rgba(45, 212, 255, .12));
+  border-color: rgba(45,212,255,.22);
+}
+.contact-zalo .contact-icon {
+  background: rgba(45,212,255,.16);
+  border-color: rgba(45,212,255,.18);
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: .04em;
 }
 .contact-static { cursor: default; }
 .contact-icon {
@@ -492,6 +511,9 @@ h1 span {
 @media (max-width: 920px) {
   .hero-grid, .intro-grid, .grid-3, .showcase-grid, .contact-box, .section-head.with-scroll-tip {
     grid-template-columns: 1fr; display: grid;
+  }
+  .contact-row {
+    grid-template-columns: 1fr;
   }
   .hero-stats { grid-template-columns: 1fr; }
   .site-nav-wrap { top: 8px; }
