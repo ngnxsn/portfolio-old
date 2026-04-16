@@ -29,8 +29,12 @@
       background:
         linear-gradient(180deg, rgba(1,5,2,.74), rgba(2,8,4,.9)),
         url('./background-matrix-green.gif') center center / cover no-repeat fixed;
-      overflow-x: hidden;
+      overflow-x: clip;
       position: relative;
+    }
+    html {
+      overflow-x: clip;
+      background: #020603;
     }
     body::before {
       content: '';
@@ -808,14 +812,25 @@
 
     function launchGift() {
       const button = document.getElementById('giftButton')
+      const rect = button.getBoundingClientRect()
+      const safeLeft = Math.max(90, window.innerWidth * 0.2)
+      const safeRight = Math.min(window.innerWidth - 90, window.innerWidth * 0.8)
+      const centerX = Math.min(safeRight, Math.max(safeLeft, rect.left + rect.width / 2))
+      const centerY = Math.max(80, rect.top - 26)
+
       button.classList.add('is-firing')
       setTimeout(() => button.classList.remove('is-firing'), 220)
-      runningUntil = Date.now() + 2600
-      for (let i = 0; i < 10; i++) {
+      runningUntil = Date.now() + 2200
+      for (let i = 0; i < 8; i++) {
         setTimeout(() => {
-          explode(Math.random() * window.innerWidth * 0.72 + window.innerWidth * 0.14, Math.random() * window.innerHeight * 0.55 + 70)
+          const offsetX = (Math.random() - 0.5) * 160
+          const offsetY = -Math.random() * 120
+          explode(
+            Math.min(safeRight, Math.max(safeLeft, centerX + offsetX)),
+            Math.max(72, centerY + offsetY)
+          )
           if (!raf) animate()
-        }, i * 140)
+        }, i * 120)
       }
     }
 
