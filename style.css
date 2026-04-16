@@ -448,17 +448,13 @@ h1 span {
   font-size: 16px;
   flex: 0 0 34px;
 }
-.contact-icon-image {
-  padding: 6px;
-  overflow: hidden;
-}
-.contact-icon-image img {
-  width: 22px;
-  height: 22px;
-  object-fit: contain;
-  display: block;
-  max-width: 100%;
-  max-height: 100%;
+.contact-icon-zalo {
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: .02em;
+  color: #0a67ff;
+  background: #ffffff;
+  border-color: rgba(255,255,255,.35);
 }
 .contact-text {
   font-weight: 700;
