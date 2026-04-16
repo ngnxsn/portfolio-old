@@ -57,5 +57,6 @@ window.PORTFOLIO_DEFAULTS = {
   contactDesc: 'Cảm ơn bạn đã xem hết CV của mình.',
   email: 'nguyenson.0312vn@gmail.com',
   phone: '0946831748',
+  zalo: 'https://zalo.me/0946831748',
   address: 'Tây Hồ, Hà Nội'
 };

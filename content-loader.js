@@ -265,6 +265,7 @@
     setTel('phoneBtn', data.phone);
     const phoneText = document.querySelector('#phoneBtn .contact-text');
     if (phoneText && data.phone) phoneText.textContent = data.phone;
+    setHref('zaloBtn', data.zalo);
     setText('addressText', data.address);
   }
 
