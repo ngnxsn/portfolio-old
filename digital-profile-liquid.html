@@ -862,7 +862,7 @@
       submitButton.disabled = true
 
       try {
-        const telegramApiBase = window.TELEGRAM_API_BASE || 'https://portfolio-telegram-api.vercel.app'
+        const telegramApiBase = window.TELEGRAM_API_BASE || 'https://portfolio-eight-rho-280qr66qzo.vercel.app'
         const response = await fetch(`${telegramApiBase}/api/send-telegram-message`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
