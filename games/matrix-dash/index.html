@@ -1,0 +1,515 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Matrix Dash</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #030603;
+      --panel: rgba(4, 14, 6, .88);
+      --line: rgba(102,255,136,.16);
+      --text: #d8ffe0;
+      --muted: #7db888;
+      --green: #66ff88;
+      --green-2: #2bd759;
+      --danger: #ff6b6b;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: 'Be Vietnam Pro', sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 50% 20%, rgba(102,255,136,.1), transparent 18%),
+        linear-gradient(180deg, #000, #061008 50%, #020603 100%);
+      overflow: hidden;
+    }
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(180deg, rgba(255,255,255,.03) 0 1px, transparent 1px 4px);
+      opacity: .25;
+      pointer-events: none;
+    }
+    .wrap {
+      width: min(1120px, calc(100% - 24px));
+      margin: 0 auto;
+      padding: 18px 0;
+      display: grid;
+      gap: 16px;
+    }
+    .hud {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 18px;
+      border-radius: 18px;
+      background: linear-gradient(180deg, rgba(7, 22, 10, .92), rgba(2, 10, 4, .98));
+      border: 1px solid var(--line);
+      box-shadow: 0 0 24px rgba(102,255,136,.06);
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .hud strong { color: var(--green); }
+    .hud .stats { display: flex; gap: 18px; flex-wrap: wrap; }
+    .card {
+      position: relative;
+      border-radius: 22px;
+      overflow: hidden;
+      background: linear-gradient(180deg, rgba(7, 20, 10, .96), rgba(2, 8, 3, .98));
+      border: 1px solid var(--line);
+      box-shadow: 0 0 34px rgba(102,255,136,.06), inset 0 0 24px rgba(102,255,136,.04);
+    }
+    canvas {
+      width: 100%;
+      height: min(70vh, 560px);
+      display: block;
+      background:
+        radial-gradient(circle at 50% 30%, rgba(102,255,136,.08), transparent 26%),
+        linear-gradient(180deg, rgba(4,18,7,.96), rgba(1,7,2,.98));
+    }
+    .overlay {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      pointer-events: none;
+    }
+    .panel {
+      max-width: 520px;
+      padding: 24px;
+      border-radius: 18px;
+      background: rgba(2, 8, 3, .82);
+      border: 1px solid rgba(102,255,136,.12);
+      text-align: center;
+      box-shadow: 0 0 34px rgba(102,255,136,.08);
+      pointer-events: auto;
+    }
+    h1 {
+      margin: 0 0 10px;
+      font-size: clamp(34px, 5vw, 54px);
+      line-height: .95;
+      color: var(--green);
+      text-shadow: 0 0 20px rgba(102,255,136,.22);
+    }
+    p { color: var(--muted); line-height: 1.8; margin: 0 0 10px; }
+    .btn-row { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin-top: 18px; }
+    button {
+      border: 1px solid rgba(102,255,136,.18);
+      background: linear-gradient(180deg, rgba(20,64,28,.94), rgba(8,26,10,.98));
+      color: var(--green);
+      padding: 12px 18px;
+      border-radius: 999px;
+      font: inherit;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 0 18px rgba(102,255,136,.08);
+    }
+    button:hover { transform: translateY(-2px); }
+    .tips {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+    .tip {
+      padding: 14px;
+      border-radius: 16px;
+      background: rgba(3,12,4,.78);
+      border: 1px solid rgba(102,255,136,.1);
+      font-size: 14px;
+      color: var(--muted);
+    }
+    .tip strong {
+      display: block;
+      margin-bottom: 6px;
+      color: #c7ffd2;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      letter-spacing: .05em;
+    }
+    @media (max-width: 720px) {
+      .tips { grid-template-columns: 1fr; }
+      canvas { height: 58vh; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="hud">
+      <div><strong>MATRIX DASH</strong><div style="color:var(--muted); font-size:12px;">Geometry Dash style mini game</div></div>
+      <div class="stats">
+        <span>Distance: <strong id="distanceStat">0</strong></span>
+        <span>Best: <strong id="bestStat">0</strong></span>
+        <span>Mode: <strong>NORMAL</strong></span>
+      </div>
+    </div>
+
+    <div class="card">
+      <canvas id="game" width="1200" height="560"></canvas>
+      <div class="overlay" id="overlay">
+        <div class="panel" id="panel">
+          <h1>Matrix Dash</h1>
+          <p>Nhảy qua chướng ngại vật, giữ nhịp và sống sót lâu nhất có thể. Cảm hứng từ Geometry Dash, nhưng em bẻ sang vibe matrix cho đúng bài.</p>
+          <p><strong style="color:#c7ffd2; font-family:'JetBrains Mono', monospace;">SPACE / CLICK / TAP</strong> để nhảy</p>
+          <div class="btn-row">
+            <button id="startBtn" type="button">START RUN</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tips">
+      <div class="tip"><strong>CONTROL</strong>Space, click chuột hoặc chạm màn hình để nhảy.</div>
+      <div class="tip"><strong>OBJECTIVE</strong>Tránh spike, giữ nhịp và đi càng xa càng tốt.</div>
+      <div class="tip"><strong>STYLE</strong>Nền matrix, scanline, glow xanh để nhìn đúng chất cyber terminal.</div>
+    </div>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('game')
+    const ctx = canvas.getContext('2d')
+    const overlay = document.getElementById('overlay')
+    const panel = document.getElementById('panel')
+    const startBtn = document.getElementById('startBtn')
+    const distanceStat = document.getElementById('distanceStat')
+    const bestStat = document.getElementById('bestStat')
+
+    const groundY = 455
+    let bestScore = Number(localStorage.getItem('matrixDashBest') || 0)
+    bestStat.textContent = bestScore
+
+    const state = {
+      running: false,
+      gameOver: false,
+      speed: 7.2,
+      distance: 0,
+      frame: 0,
+      obstacles: [],
+      sparks: [],
+      rain: [],
+      player: {
+        x: 170,
+        y: groundY - 42,
+        size: 42,
+        vy: 0,
+        gravity: 0.7,
+        jumpForce: -13.8,
+        onGround: true,
+        rotation: 0,
+      },
+    }
+
+    function resetGame() {
+      state.running = true
+      state.gameOver = false
+      state.speed = 6.4
+      state.distance = 0
+      state.frame = 0
+      state.obstacles = []
+      state.sparks = []
+      state.rain = Array.from({ length: 24 }, (_, i) => ({
+        x: (i / 24) * canvas.width,
+        y: Math.random() * canvas.height,
+        len: 60 + Math.random() * 80,
+        speed: 4 + Math.random() * 4,
+      }))
+      state.player.y = groundY - state.player.size
+      state.player.vy = 0
+      state.player.onGround = true
+      state.player.rotation = 0
+      overlay.style.display = 'none'
+    }
+
+    function jump() {
+      if (!state.running) {
+        resetGame()
+        return
+      }
+      if (state.player.onGround) {
+        state.player.vy = state.player.jumpForce
+        state.player.onGround = false
+      }
+    }
+
+    function spawnObstacle() {
+      const height = 28 + Math.random() * 40
+      const width = 26 + Math.random() * 20
+      state.obstacles.push({
+        x: canvas.width + width,
+        y: groundY - height,
+        width,
+        height,
+        type: 'ground-spike',
+      })
+    }
+
+    function spawnFlyingSpike() {
+      const size = 30 + Math.random() * 20
+      state.obstacles.push({
+        x: canvas.width + size,
+        y: 220 + Math.random() * 120,
+        width: size,
+        height: size,
+        type: 'flying-spike',
+      })
+    }
+
+    function spawnPulsingSpike() {
+      const width = 34 + Math.random() * 18
+      const maxHeight = 46 + Math.random() * 34
+      state.obstacles.push({
+        x: canvas.width + width,
+        y: groundY - maxHeight,
+        width,
+        height: maxHeight,
+        maxHeight,
+        type: 'pulsing-spike',
+        pulseOffset: Math.random() * Math.PI * 2,
+      })
+    }
+
+    function spawnSpark(x, y) {
+      for (let i = 0; i < 10; i++) {
+        state.sparks.push({
+          x,
+          y,
+          vx: (Math.random() - 0.5) * 4,
+          vy: (Math.random() - 0.5) * 4,
+          life: 24 + Math.random() * 18,
+        })
+      }
+    }
+
+    function update() {
+      if (!state.running) return
+      state.frame += 1
+      state.distance += state.speed * 0.1
+      distanceStat.textContent = Math.floor(state.distance)
+      state.speed += 0.0012
+
+      if (state.frame % Math.max(56, Math.floor(98 - state.speed * 2.4)) === 0) {
+        spawnObstacle()
+      }
+      if (state.frame > 140 && state.frame % Math.max(120, Math.floor(182 - state.speed * 4)) === 0) {
+        spawnFlyingSpike()
+      }
+      if (state.frame > 220 && state.frame % Math.max(132, Math.floor(210 - state.speed * 4)) === 0) {
+        spawnPulsingSpike()
+      }
+
+      state.player.vy += state.player.gravity
+      state.player.y += state.player.vy
+      state.player.rotation += state.player.onGround ? 0 : 0.09
+
+      if (state.player.y >= groundY - state.player.size) {
+        state.player.y = groundY - state.player.size
+        state.player.vy = 0
+        state.player.onGround = true
+        state.player.rotation = 0
+      }
+
+      state.obstacles.forEach((obs) => {
+        obs.x -= obs.type === 'flying-spike' ? state.speed * 1.18 : state.speed
+        if (obs.type === 'pulsing-spike') {
+          const wave = (Math.sin(state.frame * 0.12 + obs.pulseOffset) + 1) / 2
+          obs.height = 16 + wave * (obs.maxHeight - 16)
+          obs.y = groundY - obs.height
+        }
+      })
+      state.obstacles = state.obstacles.filter((obs) => obs.x + obs.width > -10)
+
+      state.rain.forEach((drop) => {
+        drop.y += drop.speed
+        if (drop.y - drop.len > canvas.height) {
+          drop.y = -40
+          drop.x = Math.random() * canvas.width
+        }
+      })
+
+      state.sparks.forEach((spark) => {
+        spark.x += spark.vx
+        spark.y += spark.vy
+        spark.life -= 1
+      })
+      state.sparks = state.sparks.filter((spark) => spark.life > 0)
+
+      const playerHitbox = {
+        x: state.player.x + 6,
+        y: state.player.y + 6,
+        width: state.player.size - 12,
+        height: state.player.size - 12,
+      }
+
+      for (const obs of state.obstacles) {
+        if (
+          playerHitbox.x < obs.x + obs.width &&
+          playerHitbox.x + playerHitbox.width > obs.x &&
+          playerHitbox.y < obs.y + obs.height &&
+          playerHitbox.y + playerHitbox.height > obs.y
+        ) {
+          endGame()
+          break
+        }
+      }
+    }
+
+    function endGame() {
+      state.running = false
+      state.gameOver = true
+      spawnSpark(state.player.x + state.player.size / 2, state.player.y + state.player.size / 2)
+      const score = Math.floor(state.distance)
+      if (score > bestScore) {
+        bestScore = score
+        localStorage.setItem('matrixDashBest', bestScore)
+        bestStat.textContent = bestScore
+      }
+      panel.innerHTML = `
+        <h1>System Crash</h1>
+        <p>Anh vừa đâm vào spike rồi 😌</p>
+        <p><strong style="color:#c7ffd2; font-family:'JetBrains Mono', monospace;">Distance: ${score}</strong></p>
+        <div class="btn-row"><button id="restartBtn" type="button">RESTART</button></div>
+      `
+      overlay.style.display = 'grid'
+      document.getElementById('restartBtn').addEventListener('click', resetGame, { once: true })
+    }
+
+    function drawBackground() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height)
+
+      const grad = ctx.createLinearGradient(0, 0, 0, canvas.height)
+      grad.addColorStop(0, 'rgba(5, 18, 8, 0.98)')
+      grad.addColorStop(1, 'rgba(1, 8, 2, 1)')
+      ctx.fillStyle = grad
+      ctx.fillRect(0, 0, canvas.width, canvas.height)
+
+      ctx.save()
+      ctx.strokeStyle = 'rgba(102,255,136,0.12)'
+      ctx.lineWidth = 1
+      for (let x = 0; x < canvas.width; x += 40) {
+        ctx.beginPath()
+        ctx.moveTo(x, 0)
+        ctx.lineTo(x, canvas.height)
+        ctx.stroke()
+      }
+      for (let y = 0; y < canvas.height; y += 40) {
+        ctx.beginPath()
+        ctx.moveTo(0, y)
+        ctx.lineTo(canvas.width, y)
+        ctx.stroke()
+      }
+      ctx.restore()
+
+      ctx.save()
+      state.rain.forEach((drop) => {
+        const rainGrad = ctx.createLinearGradient(drop.x, drop.y - drop.len, drop.x, drop.y)
+        rainGrad.addColorStop(0, 'rgba(102,255,136,0)')
+        rainGrad.addColorStop(0.5, 'rgba(102,255,136,0.9)')
+        rainGrad.addColorStop(1, 'rgba(102,255,136,0)')
+        ctx.strokeStyle = rainGrad
+        ctx.lineWidth = 2
+        ctx.beginPath()
+        ctx.moveTo(drop.x, drop.y - drop.len)
+        ctx.lineTo(drop.x, drop.y)
+        ctx.stroke()
+      })
+      ctx.restore()
+
+      ctx.fillStyle = 'rgba(255,255,255,.04)'
+      for (let y = 0; y < canvas.height; y += 4) {
+        ctx.fillRect(0, y, canvas.width, 1)
+      }
+    }
+
+    function drawGround() {
+      ctx.fillStyle = 'rgba(8, 28, 12, 0.95)'
+      ctx.fillRect(0, groundY, canvas.width, canvas.height - groundY)
+
+      ctx.strokeStyle = 'rgba(102,255,136,0.55)'
+      ctx.lineWidth = 3
+      ctx.beginPath()
+      ctx.moveTo(0, groundY)
+      ctx.lineTo(canvas.width, groundY)
+      ctx.stroke()
+
+      for (let x = -(state.frame * state.speed % 36); x < canvas.width; x += 36) {
+        ctx.fillStyle = 'rgba(102,255,136,0.16)'
+        ctx.fillRect(x, groundY + 18, 18, 4)
+      }
+    }
+
+    function drawPlayer() {
+      ctx.save()
+      ctx.translate(state.player.x + state.player.size / 2, state.player.y + state.player.size / 2)
+      ctx.rotate(state.player.rotation)
+      ctx.shadowColor = 'rgba(102,255,136,0.35)'
+      ctx.shadowBlur = 18
+      ctx.fillStyle = '#66ff88'
+      ctx.fillRect(-state.player.size / 2, -state.player.size / 2, state.player.size, state.player.size)
+      ctx.fillStyle = '#03210a'
+      ctx.fillRect(-8, -8, 16, 16)
+      ctx.restore()
+    }
+
+    function drawObstacles() {
+      state.obstacles.forEach((obs) => {
+        ctx.save()
+        ctx.fillStyle = '#2bd759'
+        ctx.shadowColor = 'rgba(102,255,136,0.2)'
+        ctx.shadowBlur = 16
+        ctx.beginPath()
+        if (obs.type === 'flying-spike') {
+          ctx.moveTo(obs.x, obs.y + obs.height / 2)
+          ctx.lineTo(obs.x + obs.width, obs.y)
+          ctx.lineTo(obs.x + obs.width, obs.y + obs.height)
+        } else {
+          ctx.moveTo(obs.x, groundY)
+          ctx.lineTo(obs.x + obs.width / 2, obs.y)
+          ctx.lineTo(obs.x + obs.width, groundY)
+        }
+        ctx.closePath()
+        ctx.fill()
+        ctx.restore()
+      })
+    }
+
+    function drawSparks() {
+      ctx.save()
+      state.sparks.forEach((spark) => {
+        ctx.globalAlpha = Math.max(spark.life / 40, 0)
+        ctx.fillStyle = '#c7ffd2'
+        ctx.fillRect(spark.x, spark.y, 3, 3)
+      })
+      ctx.restore()
+      ctx.globalAlpha = 1
+    }
+
+    function loop() {
+      update()
+      drawBackground()
+      drawGround()
+      drawPlayer()
+      drawObstacles()
+      drawSparks()
+      requestAnimationFrame(loop)
+    }
+
+    startBtn.addEventListener('click', resetGame)
+    window.addEventListener('keydown', (event) => {
+      if (event.code === 'Space' || event.code === 'ArrowUp') {
+        event.preventDefault()
+        jump()
+      }
+    })
+    canvas.addEventListener('pointerdown', jump)
+
+    loop()
+  </script>
+</body>
+</html>

@@ -1,0 +1,908 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nguyễn Sơn | Digital Profile Matrix Vertical</title>
+  <meta name="description" content="Digital Profile của Nguyễn Sơn theo phong cách matrix dọc, neon xanh, terminal control panel." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --text: #d9ffe2;
+      --muted: #78b985;
+      --green: #67ff89;
+      --green-2: #2ed85a;
+      --panel: rgba(5, 18, 8, .9);
+      --panel-2: rgba(2, 10, 4, .96);
+      --line: rgba(103,255,137,.16);
+      --line-strong: rgba(132,255,156,.3);
+      --shadow: 0 30px 90px rgba(0,0,0,.5);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: 'Be Vietnam Pro', sans-serif;
+      color: var(--text);
+      background:
+        linear-gradient(180deg, rgba(1,5,2,.74), rgba(2,8,4,.9)),
+        url('./background-matrix-green.jpg') center center / cover no-repeat fixed;
+      overflow-x: hidden;
+      position: relative;
+    }
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        repeating-linear-gradient(180deg, rgba(255,255,255,.03) 0 1px, transparent 1px 4px),
+        repeating-linear-gradient(90deg, rgba(103,255,137,.015) 0 1px, transparent 1px 42px),
+        radial-gradient(circle at 50% 16%, rgba(103,255,137,.08), transparent 24%),
+        linear-gradient(180deg, rgba(0,0,0,.16), rgba(0,0,0,.34));
+      mix-blend-mode: screen;
+      opacity: .42;
+      pointer-events: none;
+      z-index: 0;
+    }
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(180deg, transparent 0%, rgba(103,255,137,.02) 50%, transparent 100%);
+      animation: sweep 8s linear infinite;
+      pointer-events: none;
+      z-index: 0;
+    }
+    @keyframes sweep {
+      from { transform: translateY(-100%); }
+      to { transform: translateY(100%); }
+    }
+    .noise {
+      position: fixed;
+      inset: 0;
+      background-image: radial-gradient(rgba(255,255,255,.06) .6px, transparent .7px);
+      background-size: 6px 6px;
+      opacity: .05;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .matrix-rain,
+    .matrix-code,
+    .matrix-sparks {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .matrix-rain span {
+      position: absolute;
+      top: -30%;
+      width: 3px;
+      border-radius: 999px;
+      background: linear-gradient(180deg, rgba(103,255,137,0), rgba(103,255,137,1), rgba(103,255,137,0));
+      box-shadow: 0 0 16px rgba(103,255,137,.26);
+      opacity: .6;
+      animation: rain linear infinite;
+    }
+    .matrix-code span {
+      position: absolute;
+      top: -20%;
+      font-family: 'JetBrains Mono', monospace;
+      color: rgba(160,255,180,.76);
+      text-shadow: 0 0 12px rgba(103,255,137,.22);
+      font-size: 14px;
+      letter-spacing: .08em;
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      animation: codeRain linear infinite;
+      opacity: .5;
+    }
+    .matrix-sparks span {
+      position: absolute;
+      height: 2px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, rgba(103,255,137,0), rgba(103,255,137,.95), rgba(103,255,137,0));
+      box-shadow: 0 0 12px rgba(103,255,137,.2);
+      opacity: .36;
+      animation: spark 3.8s ease-in-out infinite;
+    }
+    @keyframes rain {
+      from { transform: translateY(-20vh); opacity: 0; }
+      12% { opacity: .78; }
+      to { transform: translateY(130vh); opacity: 0; }
+    }
+    @keyframes codeRain {
+      from { transform: translateY(-18vh); opacity: 0; }
+      10% { opacity: .58; }
+      to { transform: translateY(125vh); opacity: 0; }
+    }
+    @keyframes spark {
+      0%, 100% { transform: translateX(-40px) scaleX(.8); opacity: 0; }
+      45% { opacity: .4; }
+      50% { transform: translateX(40px) scaleX(1.1); opacity: .8; }
+      55% { opacity: .32; }
+    }
+    .shell {
+      width: min(760px, calc(100% - 20px));
+      margin: 0 auto;
+      padding: 22px 0 34px;
+      position: relative;
+      z-index: 1;
+    }
+    .terminal-frame {
+      border: 1px solid rgba(183, 198, 183, .22);
+      border-radius: 22px;
+      background: linear-gradient(180deg, #212821, #111611);
+      box-shadow: var(--shadow), inset 0 0 0 1px rgba(255,255,255,.05);
+      padding: 18px;
+    }
+    .terminal-shell {
+      border-radius: 18px;
+      overflow: hidden;
+      background: linear-gradient(180deg, #171f18, #0d120d);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.05);
+    }
+    .terminal-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      background: rgba(14,18,14,.96);
+      border-bottom: 1px solid rgba(255,255,255,.05);
+    }
+    .terminal-dots {
+      display: flex;
+      gap: 7px;
+    }
+    .terminal-dots span {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      display: block;
+    }
+    .terminal-dots span:nth-child(1) { background: #ff5f57; }
+    .terminal-dots span:nth-child(2) { background: #ffbd2f; }
+    .terminal-dots span:nth-child(3) { background: #28c840; }
+    .terminal-top span:last-child {
+      color: var(--muted);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      letter-spacing: .06em;
+    }
+    .terminal-body {
+      padding: 18px;
+      background:
+        radial-gradient(circle at 50% 14%, rgba(103,255,137,.12), transparent 18%),
+        linear-gradient(180deg, rgba(4,16,7,.96), rgba(1,7,2,.98));
+      min-height: 820px;
+      position: relative;
+    }
+    .terminal-body::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(180deg, rgba(255,255,255,.03) 0 1px, transparent 1px 5px);
+      opacity: .25;
+      pointer-events: none;
+    }
+    .stack {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      gap: 16px;
+    }
+    .mono-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--muted);
+      font-size: 12px;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+    }
+    .module {
+      border-radius: 18px;
+      padding: 18px;
+      background: linear-gradient(180deg, rgba(6,22,10,.92), rgba(2,10,4,.96));
+      border: 1px solid var(--line);
+      box-shadow: inset 0 0 24px rgba(103,255,137,.06), 0 0 22px rgba(103,255,137,.03);
+      position: relative;
+      overflow: hidden;
+    }
+    .module::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,.04), transparent 34%, rgba(103,255,137,.04) 72%, transparent 100%);
+      pointer-events: none;
+    }
+    .hero {
+      display: grid;
+      grid-template-columns: 156px 1fr;
+      gap: 20px;
+      align-items: center;
+    }
+    .avatar-wrap {
+      width: 156px;
+      height: 156px;
+      border-radius: 18px;
+      overflow: hidden;
+      border: 1px solid rgba(103,255,137,.18);
+      box-shadow: 0 0 22px rgba(103,255,137,.08);
+    }
+    .avatar-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      filter: saturate(.85) contrast(1.08) brightness(.9);
+    }
+    .eyebrow {
+      margin: 0;
+      color: var(--muted);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+    h1 {
+      margin: 10px 0 8px;
+      font-size: clamp(34px, 6vw, 52px);
+      line-height: .95;
+      letter-spacing: -.05em;
+      color: var(--green);
+      text-shadow: 0 0 18px rgba(103,255,137,.24);
+    }
+    .lead {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.8;
+      font-size: 14px;
+    }
+    .section-title {
+      margin: 0 0 12px;
+      font-size: 18px;
+      color: var(--green);
+      font-family: 'JetBrains Mono', monospace;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+    }
+    .data-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    .data-card {
+      border-radius: 14px;
+      padding: 14px;
+      border: 1px solid rgba(103,255,137,.12);
+      background: rgba(0,0,0,.18);
+      min-height: 112px;
+    }
+    .data-card strong {
+      display: block;
+      margin-bottom: 10px;
+      color: #aef8bc;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+    .data-card p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.8;
+      font-size: 14px;
+    }
+    .link-list {
+      display: grid;
+      gap: 10px;
+    }
+    .link-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      padding: 13px 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(103,255,137,.12);
+      background: rgba(0,0,0,.2);
+      text-decoration: none;
+      color: var(--text);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      transition: .22s ease;
+    }
+    .link-item:hover {
+      transform: translateX(4px);
+      border-color: rgba(103,255,137,.24);
+      box-shadow: 0 0 18px rgba(103,255,137,.08);
+    }
+    .status-panel {
+      display: grid;
+      grid-template-columns: 1fr 74px;
+      gap: 16px;
+      align-items: center;
+    }
+    .signal-ring {
+      width: 74px;
+      height: 74px;
+      border-radius: 999px;
+      border: 1px solid rgba(103,255,137,.16);
+      background: radial-gradient(circle at center, rgba(103,255,137,.16), rgba(4,18,8,.96) 60%);
+      box-shadow: inset 0 0 16px rgba(103,255,137,.08), 0 0 18px rgba(103,255,137,.06);
+      display: grid;
+      place-items: center;
+      color: var(--green);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+    }
+    .gift-row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .gift-btn {
+      border: 2px solid rgba(103,255,137,.42);
+      background: linear-gradient(180deg, rgba(18,70,29,.96), rgba(7,30,12,.98));
+      color: var(--green);
+      padding: 16px 36px;
+      border-radius: 18px;
+      font: inherit;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 800;
+      font-size: 18px;
+      letter-spacing: .08em;
+      cursor: pointer;
+      box-shadow: 0 0 22px rgba(103,255,137,.14), inset 0 0 14px rgba(103,255,137,.06);
+      transition: transform .16s ease, box-shadow .16s ease, filter .16s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .gift-btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent, rgba(103,255,137,.1), transparent);
+      transform: translateX(-100%);
+      transition: transform .35s ease;
+    }
+    .gift-btn:hover {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 0 30px rgba(103,255,137,.22), inset 0 0 16px rgba(103,255,137,.08);
+    }
+    .gift-btn:hover::before {
+      transform: translateX(100%);
+    }
+    .gift-btn.is-firing {
+      transform: scale(.96);
+      filter: brightness(1.12);
+      box-shadow: 0 0 34px rgba(103,255,137,.24), 0 0 70px rgba(103,255,137,.12);
+    }
+    .battle-btn {
+      width: min(420px, 100%);
+      display: block;
+      margin: 16px auto 0;
+      border: 1px solid rgba(103,255,137,.24);
+      background: linear-gradient(180deg, rgba(16,58,25,.9), rgba(6,26,11,.96));
+      color: #baffc8;
+      padding: 14px 18px;
+      border-radius: 0;
+      font: inherit;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      font-size: 16px;
+      letter-spacing: .14em;
+      cursor: pointer;
+      box-shadow: 0 0 28px rgba(103,255,137,.16), inset 0 0 18px rgba(103,255,137,.08);
+      text-transform: uppercase;
+      position: relative;
+      overflow: hidden;
+    }
+    .battle-btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent, rgba(103,255,137,.08), transparent);
+      transform: translateX(-100%);
+      transition: transform .35s ease;
+    }
+    .battle-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 34px rgba(103,255,137,.24), inset 0 0 18px rgba(103,255,137,.1);
+    }
+    .battle-btn:hover::before {
+      transform: translateX(100%);
+    }
+    .game-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.78);
+      display: none;
+      place-items: center;
+      z-index: 40;
+      padding: 18px;
+    }
+    .game-modal.show {
+      display: grid;
+    }
+    .game-shell {
+      width: min(1120px, 100%);
+      position: relative;
+      border: 1px solid rgba(103,255,137,.16);
+      background: #030603;
+      box-shadow: 0 0 34px rgba(103,255,137,.1);
+      padding: 16px;
+    }
+    .game-close {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 42px;
+      height: 42px;
+      border: 1px solid rgba(255,255,255,.18);
+      background: rgba(0,0,0,.44);
+      color: #d8ffe0;
+      font: inherit;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 20px;
+      cursor: pointer;
+      z-index: 2;
+    }
+    .game-frame {
+      width: 100%;
+      height: min(78vh, 760px);
+      border: 0;
+      background: #020402;
+    }
+    .message-box {
+      margin-top: 18px;
+      border-radius: 18px;
+      padding: 18px;
+      border: 1px solid rgba(103,255,137,.12);
+      background: linear-gradient(180deg, rgba(7,24,10,.82), rgba(2,10,4,.94));
+      box-shadow: inset 0 0 18px rgba(103,255,137,.05);
+    }
+    .message-box h3 {
+      margin: 0 0 16px;
+      text-align: center;
+      color: #b8ffca;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 16px;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+    .message-form {
+      display: grid;
+      gap: 12px;
+    }
+    .message-form input,
+    .message-form textarea {
+      width: 100%;
+      border: 1px solid rgba(103,255,137,.14);
+      border-radius: 0;
+      background: rgba(0,0,0,.22);
+      color: var(--text);
+      padding: 14px 16px;
+      font: inherit;
+      font-family: 'JetBrains Mono', monospace;
+      outline: none;
+    }
+    .message-form input::placeholder,
+    .message-form textarea::placeholder {
+      color: rgba(120,185,133,.6);
+    }
+    .message-form textarea {
+      min-height: 110px;
+      resize: vertical;
+    }
+    .message-submit {
+      width: 100%;
+      border: 1px solid rgba(103,255,137,.18);
+      background: rgba(0,0,0,.24);
+      color: #c7ffd2;
+      padding: 14px 18px;
+      font: inherit;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      letter-spacing: .08em;
+      cursor: pointer;
+    }
+    .message-submit:hover {
+      background: rgba(103,255,137,.08);
+    }
+    .message-status {
+      min-height: 20px;
+      color: #b8ffca;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      text-align: center;
+    }
+    .message-status.error {
+      color: #ffd0d0;
+    }
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 30px;
+      transform: translateX(-50%) translateY(30px);
+      min-width: 280px;
+      max-width: calc(100% - 32px);
+      padding: 16px 18px;
+      border-radius: 16px;
+      border: 1px solid rgba(103,255,137,.2);
+      background: linear-gradient(180deg, rgba(12,34,16,.94), rgba(5,16,7,.98));
+      color: #d8ffe0;
+      box-shadow: 0 0 24px rgba(103,255,137,.14), 0 12px 34px rgba(0,0,0,.34);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .22s ease, transform .22s ease;
+      z-index: 30;
+      text-align: center;
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+    .toast.error {
+      border-color: rgba(255,120,120,.28);
+      color: #ffd4d4;
+      box-shadow: 0 0 24px rgba(255,120,120,.12), 0 12px 34px rgba(0,0,0,.34);
+    }
+    .message-log {
+      margin-top: 18px;
+      display: grid;
+      gap: 12px;
+    }
+    .message-log-card {
+      position: relative;
+      border: 1px solid rgba(103,255,137,.12);
+      background: linear-gradient(180deg, rgba(34,10,8,.78), rgba(18,6,4,.92));
+      border-radius: 0;
+      padding: 16px 18px 28px;
+      box-shadow: inset 0 0 18px rgba(255,70,40,.04);
+    }
+    .message-log-card::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background: linear-gradient(180deg, rgba(255,120,70,.75), rgba(120,20,10,.1));
+    }
+    .message-log-card strong,
+    .message-log-card span,
+    .message-log-card time {
+      display: block;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .message-log-card strong {
+      color: #ffd0b0;
+      font-size: 13px;
+      margin-bottom: 8px;
+      letter-spacing: .06em;
+    }
+    .message-log-card span {
+      color: #f3d8c5;
+      font-size: 14px;
+      line-height: 1.7;
+      padding-right: 110px;
+    }
+    .message-log-card time {
+      position: absolute;
+      right: 14px;
+      bottom: 10px;
+      color: rgba(255,220,205,.45);
+      font-size: 11px;
+    }
+    .footer-note {
+      margin-top: 4px;
+      color: var(--muted);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+    }
+    canvas#fireworks {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 10;
+    }
+    @media (max-width: 640px) {
+      .shell { width: min(100% - 14px, 760px); }
+      .terminal-body { padding: 14px; min-height: auto; }
+      .hero, .data-grid, .status-panel { grid-template-columns: 1fr; }
+      .avatar-wrap { width: 100%; height: auto; aspect-ratio: 1 / 1; }
+    }
+  </style>
+</head>
+<body>
+  <div class="noise"></div>
+  <div class="matrix-rain">
+    <span style="left:3%; height:220px; animation-duration:6.2s; animation-delay:-1.2s;"></span>
+    <span style="left:7%; height:150px; animation-duration:5.1s; animation-delay:-2.7s;"></span>
+    <span style="left:11%; height:180px; animation-duration:5.8s; animation-delay:-3.1s;"></span>
+    <span style="left:16%; height:260px; animation-duration:6.9s; animation-delay:-4.2s;"></span>
+    <span style="left:21%; height:140px; animation-duration:5.4s; animation-delay:-2.2s;"></span>
+    <span style="left:27%; height:230px; animation-duration:7.2s; animation-delay:-5.1s;"></span>
+    <span style="left:33%; height:170px; animation-duration:5.6s; animation-delay:-1.6s;"></span>
+    <span style="left:39%; height:250px; animation-duration:6.8s; animation-delay:-3.8s;"></span>
+    <span style="left:45%; height:200px; animation-duration:6.1s; animation-delay:-4.8s;"></span>
+    <span style="left:51%; height:160px; animation-duration:5.2s; animation-delay:-1.9s;"></span>
+    <span style="left:57%; height:280px; animation-duration:7.4s; animation-delay:-3.2s;"></span>
+    <span style="left:63%; height:190px; animation-duration:5.9s; animation-delay:-4.6s;"></span>
+    <span style="left:69%; height:240px; animation-duration:6.5s; animation-delay:-2.5s;"></span>
+    <span style="left:75%; height:170px; animation-duration:5.5s; animation-delay:-5.2s;"></span>
+    <span style="left:81%; height:260px; animation-duration:7.1s; animation-delay:-1.8s;"></span>
+    <span style="left:87%; height:150px; animation-duration:5.3s; animation-delay:-3.7s;"></span>
+    <span style="left:92%; height:220px; animation-duration:6.4s; animation-delay:-4.4s;"></span>
+    <span style="left:96%; height:180px; animation-duration:5.8s; animation-delay:-2.1s;"></span>
+  </div>
+  <div class="matrix-code">
+    <span style="left:5%; animation-duration:8.4s; animation-delay:-2.6s;">0101010110</span>
+    <span style="left:13%; animation-duration:7.2s; animation-delay:-4.9s;">MATRIXNODE</span>
+    <span style="left:22%; animation-duration:9.1s; animation-delay:-1.4s;">1010011101</span>
+    <span style="left:31%; animation-duration:7.8s; animation-delay:-5.4s;">NGUYENSON</span>
+    <span style="left:40%; animation-duration:8.8s; animation-delay:-2.8s;">0110110011</span>
+    <span style="left:49%; animation-duration:7.5s; animation-delay:-4.1s;">PROFILE</span>
+    <span style="left:58%; animation-duration:8.9s; animation-delay:-1.9s;">1100101010</span>
+    <span style="left:67%; animation-duration:7.1s; animation-delay:-3.3s;">MEDIA</span>
+    <span style="left:76%; animation-duration:9.4s; animation-delay:-5.2s;">1010100110</span>
+    <span style="left:85%; animation-duration:7.6s; animation-delay:-2.4s;">NEMI</span>
+    <span style="left:93%; animation-duration:8.3s; animation-delay:-4.6s;">0101101001</span>
+  </div>
+  <div class="matrix-sparks">
+    <span style="top:14%; left:8%; width:110px; animation-delay:-.8s;"></span>
+    <span style="top:26%; left:68%; width:86px; animation-delay:-2.2s;"></span>
+    <span style="top:38%; left:18%; width:124px; animation-delay:-1.4s;"></span>
+    <span style="top:49%; left:74%; width:92px; animation-delay:-3.1s;"></span>
+    <span style="top:63%; left:12%; width:132px; animation-delay:-2.6s;"></span>
+    <span style="top:77%; left:64%; width:98px; animation-delay:-1.1s;"></span>
+  </div>
+  <canvas id="fireworks"></canvas>
+
+  <div class="toast" id="messageToast"></div>
+  <div class="game-modal" id="gameModal">
+    <div class="game-shell">
+      <button class="game-close" id="closeGameModal" type="button">X</button>
+      <iframe class="game-frame" id="gameFrame" src="./games/matrix-dash/index.html" title="Matrix Dash"></iframe>
+    </div>
+  </div>
+
+  <div class="shell">
+    <div class="terminal-frame">
+      <div class="terminal-shell">
+        <div class="terminal-top">
+          <div class="terminal-dots"><span></span><span></span><span></span></div>
+          <span>PROFILE_NODE // MATRIX_VERTICAL</span>
+        </div>
+        <div class="terminal-body">
+          <div class="stack">
+            <div class="mono-row"><span>NGUYEN SON</span><span>STATUS: ONLINE</span></div>
+
+            <section class="module">
+              <div class="hero">
+                <div class="avatar-wrap">
+                  <img src="./Profile pictures.jpg" alt="Ảnh đại diện Nguyễn Sơn" />
+                </div>
+                <div>
+                  <p class="eyebrow">Identity module</p>
+                  <h1>Nguyễn Xuân Sơn</h1>
+                  <p class="lead">Đây là website Digital Profile được thiết kế cho bài tập làm quen với coding agent. Trang tập trung giới thiệu ngắn gọn thông tin cá nhân, vị trí công việc và các liên kết liên hệ chính.</p>
+                </div>
+              </div>
+            </section>
+
+            <section class="module">
+              <h2 class="section-title">Thông tin</h2>
+              <div class="data-grid">
+                <article class="data-card">
+                  <strong>Họ tên</strong>
+                  <p>Nguyễn Xuân Sơn</p>
+                </article>
+                <article class="data-card">
+                  <strong>Chức vụ</strong>
+                  <p>Media tại NEMI</p>
+                </article>
+              </div>
+            </section>
+
+            <section class="module">
+              <h2 class="section-title">Liên kết</h2>
+              <div class="link-list">
+                <a class="link-item" href="https://www.facebook.com/nhatcmn/" target="_blank" rel="noreferrer"><span>FACEBOOK</span><span>↗</span></a>
+                <a class="link-item" href="https://zalo.me/0946831748" target="_blank" rel="noreferrer"><span>ZALO</span><span>↗</span></a>
+              </div>
+            </section>
+
+            <section class="module">
+              <div>
+                <h2 class="section-title">Gift Protocol</h2>
+                <p class="lead">Nút quà được thêm vào để tạo hiệu ứng pháo hoa khi tương tác, giúp trang sinh động hơn và đúng với yêu cầu của bài tập.</p>
+              </div>
+              <div class="gift-row" style="margin-top:14px; text-align:center;">
+                <button class="gift-btn" id="giftButton" type="button">TẶNG QUÀ</button>
+              </div>
+              <button class="battle-btn" id="openGameModal" type="button">&gt; CHƠI MINIGAME</button>
+              <div class="message-box">
+                <h3>[ MESSAGE INPUT ]</h3>
+                <form class="message-form" id="messageForm">
+                  <input type="text" id="messageName" placeholder="Tên của bạn..." />
+                  <textarea id="messageContent" placeholder="Lời nhắn gửi đến chiến binh..."></textarea>
+                  <button class="message-submit" id="messageSubmit" type="submit">&gt; GỬI LỜI NHẮN</button>
+                  <div class="message-status" id="messageStatus"></div>
+                </form>
+                <div class="message-log" id="messageLog"></div>
+              </div>
+            </section>
+
+            <p class="footer-note">Thiết kế theo phong cách matrix, giao diện tối giản và tập trung vào tương tác.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('fireworks')
+    const ctx = canvas.getContext('2d')
+    const particles = []
+    let raf = null
+    let runningUntil = 0
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth * window.devicePixelRatio
+      canvas.height = window.innerHeight * window.devicePixelRatio
+      ctx.setTransform(window.devicePixelRatio, 0, 0, window.devicePixelRatio, 0, 0)
+    }
+
+    function explode(x, y) {
+      const colors = ['#67ff89', '#b8ffca', '#ffffff', '#2ed85a', '#dfffe6']
+      for (let i = 0; i < 130; i++) {
+        const angle = Math.random() * Math.PI * 2
+        const speed = Math.random() * 4.4 + 1.3
+        particles.push({
+          x,
+          y,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed,
+          life: Math.random() * 42 + 54,
+          alpha: 1,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          size: Math.random() * 2.4 + 1.2,
+        })
+      }
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height)
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i]
+        p.x += p.vx
+        p.y += p.vy
+        p.vy += 0.034
+        p.life -= 1
+        p.alpha = Math.max(p.life / 94, 0)
+        ctx.globalAlpha = p.alpha
+        ctx.fillStyle = p.color
+        ctx.beginPath()
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2)
+        ctx.fill()
+        if (p.life <= 0) particles.splice(i, 1)
+      }
+      ctx.globalAlpha = 1
+      if (particles.length || Date.now() < runningUntil) raf = requestAnimationFrame(animate)
+      else { cancelAnimationFrame(raf); raf = null }
+    }
+
+    function launchGift() {
+      const button = document.getElementById('giftButton')
+      button.classList.add('is-firing')
+      setTimeout(() => button.classList.remove('is-firing'), 220)
+      runningUntil = Date.now() + 2600
+      for (let i = 0; i < 10; i++) {
+        setTimeout(() => {
+          explode(Math.random() * window.innerWidth * 0.72 + window.innerWidth * 0.14, Math.random() * window.innerHeight * 0.55 + 70)
+          if (!raf) animate()
+        }, i * 140)
+      }
+    }
+
+    let toastTimer = null
+    function showToast(message, isError = false) {
+      const toast = document.getElementById('messageToast')
+      toast.textContent = message
+      toast.classList.toggle('error', isError)
+      toast.classList.add('show')
+      clearTimeout(toastTimer)
+      toastTimer = setTimeout(() => {
+        toast.classList.remove('show')
+      }, 2600)
+    }
+
+    function appendMessageLog(name, message) {
+      const log = document.getElementById('messageLog')
+      const card = document.createElement('article')
+      card.className = 'message-log-card'
+      const now = new Date()
+      const timeText = `${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`
+      card.innerHTML = `<strong>✦ ${name || 'ẨN DANH'}</strong><span>${message}</span><time>${timeText}</time>`
+      log.prepend(card)
+    }
+
+    async function submitMessageForm(event) {
+      event.preventDefault()
+      const nameInput = document.getElementById('messageName')
+      const contentInput = document.getElementById('messageContent')
+      const submitButton = document.getElementById('messageSubmit')
+      const status = document.getElementById('messageStatus')
+
+      const name = nameInput.value.trim()
+      const message = contentInput.value.trim()
+      if (!message) {
+        status.textContent = 'Nhập nội dung lời nhắn trước đã.'
+        status.classList.add('error')
+        showToast('Thiếu nội dung lời nhắn.', true)
+        return
+      }
+
+      status.textContent = 'Đang gửi tới Telegram...'
+      status.classList.remove('error')
+      submitButton.disabled = true
+
+      try {
+        const response = await fetch('/api/send-telegram-message', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, message }),
+        })
+        const data = await response.json()
+        if (!response.ok || !data.ok) throw new Error(data.error || 'Gửi thất bại.')
+        status.textContent = 'Đã gửi lời nhắn tới Telegram.'
+        appendMessageLog(name, message)
+        nameInput.value = ''
+        contentInput.value = ''
+        showToast('Đã gửi lời nhắn thành công tới Telegram.')
+      } catch (error) {
+        status.textContent = error.message
+        status.classList.add('error')
+        showToast(error.message, true)
+      } finally {
+        submitButton.disabled = false
+      }
+    }
+
+    function openGameModal() {
+      document.getElementById('gameModal').classList.add('show')
+    }
+
+    function closeGameModal() {
+      const modal = document.getElementById('gameModal')
+      const frame = document.getElementById('gameFrame')
+      modal.classList.remove('show')
+      frame.src = frame.src
+    }
+
+    document.getElementById('giftButton').addEventListener('click', launchGift)
+    document.getElementById('openGameModal').addEventListener('click', openGameModal)
+    document.getElementById('closeGameModal').addEventListener('click', closeGameModal)
+    document.getElementById('gameModal').addEventListener('click', (event) => {
+      if (event.target.id === 'gameModal') closeGameModal()
+    })
+    document.getElementById('messageForm').addEventListener('submit', submitMessageForm)
+    window.addEventListener('resize', resizeCanvas)
+    resizeCanvas()
+  </script>
+</body>
+</html>

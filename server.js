@@ -2,6 +2,7 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const { execFile } = require('child_process');
+const { isTelegramConfigured, sendTelegramMessage } = require('./telegram-notify');
 
 const root = __dirname;
 const preferredPorts = [8933, 8934, 8940, 8950];
@@ -105,6 +106,34 @@ function serveFile(req, res) {
     return;
   }
 
+  if (req.method === 'POST' && url.pathname === '/api/send-telegram-message') {
+    let body = '';
+    req.on('data', chunk => {
+      body += chunk;
+      if (body.length > 1024 * 1024) req.destroy();
+    });
+    req.on('end', async () => {
+      try {
+        const parsed = JSON.parse(body || '{}');
+        await sendTelegramMessage({
+          name: parsed.name,
+          message: parsed.message,
+        });
+        sendJson(res, 200, {
+          ok: true,
+          message: 'Đã gửi lời nhắn tới Telegram.'
+        });
+      } catch (error) {
+        sendJson(res, 500, {
+          ok: false,
+          error: error.message,
+          configured: isTelegramConfigured(),
+        });
+      }
+    });
+    return;
+  }
+
   let reqPath = decodeURIComponent(url.pathname.replace(/^\/+/, ''));
   if (!reqPath) reqPath = 'index.html';
   const filePath = path.join(root, reqPath);
@@ -156,6 +185,7 @@ function startServer(index = 0) {
     console.log(`Index: http://localhost:${port}/index.html`);
     console.log(`Local admin: http://localhost:${port}/local-admin.html`);
     console.log(`API:   http://localhost:${port}/api/content`);
+    console.log(`Telegram message API: http://localhost:${port}/api/send-telegram-message`);
   });
 }
 
